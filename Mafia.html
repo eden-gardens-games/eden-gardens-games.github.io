@@ -80,6 +80,19 @@
             color: #fff;
             border-radius: 5px;
         }
+		.identity-card button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .identity-card button:hover {
+            background-color: #0056b3;
+        }
 
     </style>
 </head>
@@ -99,6 +112,9 @@
 		firebase.initializeApp(firebaseConfig);
     </script>
     <script>
+		var gamePhase = "start";
+		// game phase can be - start, day, night, end.
+		// player status can be - yes, no.
 		const db = firebase.firestore();
 		const gamesRef = db.collection('mafia');
 		var isHost = false;
@@ -123,6 +139,46 @@
 				ul.appendChild(li);
 			});
 		}
+		function startGame(){
+			gamePhase = "night";
+		}
+		function updatePhase(){
+			if(gamePhase == "start"){
+				if(host){
+					const st1 = '<h3>Game is yet to start</h3><button onclick="startGame()">Start Game</button>';
+					document.getElementById('identity-card').innerHTML = st;
+				}
+				else{
+					const st2 = '<h3>Game is yet to start</h3><p>Please ask the host to start the game</p>';
+					document.getElementById('identity-card').innerHTML = st;
+				}
+			}
+			else if(gamePhase == "day"){
+				if(host){
+					
+				}
+				else{
+				
+				}
+			}
+			else if(gamePhase == "night"){
+				if(isHost){
+				
+				}
+				else {
+				
+				}
+			}
+			else {
+				if(isHost){
+				
+				}
+				else{
+				
+				}
+			}
+			setTimeout(updatePhase, 1000);
+		}
 		params = getParams();
 		const docRef = gamesRef.doc(params['gameCode']);
 		docRef.get().then(doc => {
@@ -145,28 +201,23 @@
 				
 			}
 		})
-		
+		updatePhase();
 	</script>
     <div class="container">
         <div class="sidebar">
             <h2>Game Host</h2>
-            <p id="host-name">John Doe</p>
+            <p id="host-name"></p>
 
             <div class="players">
                 <h3>Players:</h3>
                 <ul id="player-list">
                     <li>Player 1</li>
-                    <li>Player 2</li>
-                    <li>Player 3</li>
-                    <li>Player 4</li>
                 </ul>
             </div>
         </div>
 
         <div class="main-content">
             <div class="identity-card">
-                <h3>Your Identity</h3>
-                <div class="role">Villager</div>
             </div>
         </div>
     </div>

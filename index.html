@@ -140,14 +140,17 @@
 					var ps = doc.data()?.players;
 					var pr = doc.data()?.roles;
 					var pi = doc.data()?.ids;
+					var pt = doc.data()?.status;
 					ps.push(playerName);
 					pr.push("");
+					pt.push("no");
 					const psID = generateGameCode();
 					pi.push(psID);
 					docRef.update({
 					  players : ps,
 					  roles : pr,
-					  ids : pi
+					  ids : pi,
+					  status : pt
 					}).then(() => {
 							window.location.href = `Mafia.html?gameCode=${gameCode}&id=${psID}`;
 						})
