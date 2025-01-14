@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mafia Game</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 25%;
+            background-color: #222;
+            color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+        }
+
+        .players {
+            margin-top: 20px;
+        }
+
+        .players ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .players ul li {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 5px;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .identity-card {
+            width: 300px;
+            height: 400px;
+            background-color: #fff;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .identity-card h3 {
+            margin: 0;
+        }
+
+        .identity-card .role {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            border-radius: 5px;
+        }
+
+    </style>
+</head>
+<body>
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+	<script>
+		const firebaseConfig = {
+			apiKey: "AIzaSyBxotqOEdkMoZfwgQtcWsVP2DcivfFinqM",
+			authDomain: "mafia-7afa1.firebaseapp.com",
+			projectId: "mafia-7afa1",
+			storageBucket: "mafia-7afa1.firebasestorage.app",
+			messagingSenderId: "350568178297",
+			appId: "1:350568178297:web:8b0fa1721a336f5d232aa8",
+			measurementId: "G-ZG0SK1MV9F"
+		};
+		firebase.initializeApp(firebaseConfig);
+    </script>
+    <script>
+		const db = firebase.firestore();
+		const gamesRef = db.collection('mafia');
+		var isHost = false;
+		function getParams() {
+			var idx = document.URL.indexOf('?');
+			var params = new Array();
+			if (idx != -1) {
+				var pairs = document.URL.substring(idx+1, document.URL.length).split('&');
+				for (var i=0; i<pairs.length; i++) {
+					nameVal = pairs[i].split('=');
+					params[nameVal[0]] = nameVal[1];
+				}
+			}
+			return params;
+		}
+		function updateList(array) {
+			const ul = document.getElementById("player-list"); 
+			ul.innerHTML = ""; // Clear the existing list items
+			array.forEach(item => {
+				const li = document.createElement("li");
+				li.textContent = item;
+				ul.appendChild(li);
+			});
+		}
+		params = getParams();
+		const docRef = gamesRef.doc(params['gameCode']);
+		docRef.get().then(doc => {
+			if (doc.exists) {
+				var hostID = doc.data()?.hostId;
+				if (params['id'] == hostID){
+					isHost = true;
+					var hostName = doc.data()?.host;
+					document.getElementById('host-name').innerHTML = hostName; 
+					var ps = doc.data()?.players;
+					updateList(ps);
+				}
+				else {
+					var ids = doc.data()?.ids;
+					var ps = doc.data()?.players;
+					var playerName = ps[ids.indexOf(params['id'])]
+					isHost = false;
+					updateList(ps);
+				}
+				
+			}
+		})
+		
+	</script>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Game Host</h2>
+            <p id="host-name">John Doe</p>
+
+            <div class="players">
+                <h3>Players:</h3>
+                <ul id="player-list">
+                    <li>Player 1</li>
+                    <li>Player 2</li>
+                    <li>Player 3</li>
+                    <li>Player 4</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="identity-card">
+                <h3>Your Identity</h3>
+                <div class="role">Villager</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
