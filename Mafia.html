@@ -146,16 +146,17 @@
 			if(gamePhase == "start"){
 				if(isHost){
 					const st1 = '<h3>Game is yet to start</h3><button onclick="startGame()">Start Game</button>';
-					document.getElementById('identity-card').innerHTML = st;
+					document.getElementById('identity-card').innerHTML = st1;
 				}
 				else{
 					const st2 = '<h3>Game is yet to start</h3><p>Please ask the host to start the game</p>';
-					document.getElementById('identity-card').innerHTML = st;
+					document.getElementById('identity-card').innerHTML = st2;
 				}
 			}
 			else if(gamePhase == "day"){
 				if(isHost){
-					
+					const st3 = '';
+					document.getElementById('identity-card').innerHTML = st3;
 				}
 				else{
 				
