@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mafia Game</title>
     <style>
-        body {
+       body {
             margin: 0;
             font-family: Arial, sans-serif;
             display: flex;
@@ -50,10 +50,70 @@
         .main-content {
             flex-grow: 1;
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
-            align-items: center;
             padding: 20px;
             box-sizing: border-box;
+        }
+
+        .player-card {
+            width: 200px;
+            height: 250px;
+            background-color: #fff;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .player-card h4 {
+            margin: 10px 0;
+        }
+
+        .player-card .role {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            border-radius: 5px;
+        }
+
+        .player-card button {
+            margin-top: 15px;
+            padding: 5px 10px;
+            background-color: #ff4c4c;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .player-card button:hover {
+            background-color: #cc0000;
+        }
+
+        .player-card.eliminated {
+            background-color: #ccc;
+            color: #999;
+            border-color: #999;
+        }
+
+        .player-card.eliminated .role {
+            background-color: #999;
+        }
+
+        .player-card.eliminated::after {
+            content: "\2716"; /* Unicode for cross mark */
+            font-size: 50px;
+            color: red;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.7;
         }
 
         .identity-card {
@@ -118,6 +178,7 @@
 		const db = firebase.firestore();
 		const gamesRef = db.collection('mafia');
 		var isHost = false;
+		var st3 = ``;
 		function getParams() {
 			var idx = document.URL.indexOf('?');
 			var params = new Array();
@@ -139,32 +200,76 @@
 				ul.appendChild(li);
 			});
 		}
+		function shuffle(array) {
+			let currentIndex = array.length;
+			while (currentIndex != 0) {
+				let randomIndex = Math.floor(Math.random() * currentIndex);
+				currentIndex--;
+				[array[currentIndex], array[randomIndex]] = [
+				array[randomIndex], array[currentIndex]];
+			}
+			return array;
+		}
 		function startGame(){
 			gamePhase = "night";
+			const mafiaCount = document.getElementById('mafia-count').value;
+			const docRef = gamesRef.doc(params['gameCode']);
+			docRef.get().then(doc => {
+				if(doc.exists) {
+					var final_players = doc.data()?.players;
+					var final_roles = []
+					for(let i=0; i<final_players.length; i++){
+						if(i<mafiaCount){
+							final_roles.push("Mafia");
+						}
+						else if(i == mafiaCount){
+							final_roles.push("Doctor");
+						}
+						else if(i - 1 == mafiaCount){
+							final_roles.push("Detective");
+							console.log("HI");
+						}
+						else {
+							final_roles.push("Villager");
+						}
+					}
+				}
+				final_roles = shuffle(final_roles);
+				docRef.update({
+					gamePhase : gamePhase,
+					roles : final_roles
+				}).then(() => {
+					for(let i=0; i<final_players.length; i++){
+						st3 += `<div class="player-card" id="player${i+1}"><h4>${final_players[i]}</h4><div class="role">${final_roles[i]}</div></div>`;
+					}
+				})
+			})
 		}
 		function updatePhase(){
+			const docRef = gamesRef.doc(params['gameCode']);
+			docRef.get().then(doc => {
+			gamePhase = doc.data()?.gamePhase;
 			if(gamePhase == "start"){
 				if(isHost){
-					const st1 = '<h3>Game is yet to start</h3><button onclick="startGame()">Start Game</button>';
-					document.getElementById('identity-card').innerHTML = st1;
+					const st1 = `<div class = "identity-card"><h3>Game is yet to start</h3><input type="number" id="mafia-count" placeholder="Number of Mafia" min="1"><button onclick="startGame()">Start Game</button></div>`;
+					document.getElementById('main-content').innerHTML = st1;
 				}
 				else{
-					const st2 = '<h3>Game is yet to start</h3><p>Please ask the host to start the game</p>';
-					document.getElementById('identity-card').innerHTML = st2;
+					const st2 = `<div class = "identity-card"><h3>Game is yet to start</h3><p>Please ask the host to start the game</p></div>`;
+					document.getElementById('main-content').innerHTML = st2;
 				}
 			}
 			else if(gamePhase == "day"){
 				if(isHost){
-					const st3 = '';
-					document.getElementById('identity-card').innerHTML = st3;
+					
 				}
 				else{
-				
+					
 				}
 			}
 			else if(gamePhase == "night"){
 				if(isHost){
-				
+					document.getElementById('main-content').innerHTML = st3;
 				}
 				else {
 				
@@ -178,7 +283,8 @@
 				
 				}
 			}
-			setTimeout(updatePhase, 1000);
+			})
+			setTimeout(updatePhase, 5000);
 		}
 		params = getParams();
 		const docRef = gamesRef.doc(params['gameCode']);
@@ -199,10 +305,9 @@
 					isHost = false;
 					updateList(ps);
 				}
-				
+				updatePhase();
 			}
 		})
-		updatePhase();
 	</script>
     <div class="container">
         <div class="sidebar">
@@ -217,9 +322,7 @@
             </div>
         </div>
 
-        <div class="main-content">
-            <div class="identity-card">
-            </div>
+        <div class="main-content" id="main-content">
         </div>
     </div>
 </body>

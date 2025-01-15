@@ -110,6 +110,7 @@
             document.getElementById('hostSection').style.display = 'block';
 			const docRef = gamesRef.doc(gameCode);
 			docRef.set({
+			  gamePhase : "start",
 			  host : hostName,
 			  hostId : hostID,
 			  ids : [],
