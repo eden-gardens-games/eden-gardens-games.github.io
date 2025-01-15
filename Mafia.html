@@ -144,7 +144,7 @@
 		}
 		function updatePhase(){
 			if(gamePhase == "start"){
-				if(host){
+				if(isHost){
 					const st1 = '<h3>Game is yet to start</h3><button onclick="startGame()">Start Game</button>';
 					document.getElementById('identity-card').innerHTML = st;
 				}
@@ -154,7 +154,7 @@
 				}
 			}
 			else if(gamePhase == "day"){
-				if(host){
+				if(isHost){
 					
 				}
 				else{
