@@ -1,0 +1,289 @@
+body {
+	margin: 0;
+	font-family: Arial, sans-serif;
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	background-color: #f4f4f9;
+	overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+
+    .main-content {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* Adjust player card dimensions for smaller screens */
+@media (max-width: 480px) {
+    .player-card {
+        width: 100%;
+        margin: 10px 0;
+    }
+}
+
+/* Adjust header text for small screens */
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 18px;
+    }
+}
+
+.header {
+	width: 100%;
+	background-color: #222;
+	color: #fff;
+	padding: 10px 20px;
+	box-sizing: border-box;
+	text-align: center;
+}
+
+
+.container {
+	display: flex;
+	width: 100%;
+	overflow: hidden;
+}
+
+.sidebar {
+	width: 25%;
+	background-color: #222;
+	color: #fff;
+	padding: 20px;
+	box-sizing: border-box;
+	overflow-y: auto;
+	max-height: 100%;
+}
+
+
+.sidebar h2 {
+	margin-top: 0;
+}
+
+.players {
+	margin-top: 20px;
+}
+
+.players ul {
+	list-style: none;
+	padding: 0;
+}
+
+.players ul li {
+	margin: 10px 0;
+	padding: 10px;
+	background-color: #333;
+	border-radius: 5px;
+}
+
+.main-content {
+	flex-grow: 1;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	padding: 20px;
+	box-sizing: border-box;
+	overflow-y: auto;
+	max-height: 100%;
+}
+
+.player-card {
+	width: 200px;
+	height: 250px;
+	background-color: #fff;
+	border: 2px solid #ccc;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	margin: 15px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+}
+
+.player-card h4 {
+	margin: 10px 0;
+}
+
+.player-card .role {
+	padding: 5px 10px;
+	background-color: #4CAF50;
+	color: #fff;
+	border-radius: 5px;
+}
+
+.player-card button {
+	margin-top: 15px;
+	padding: 5px 10px;
+	background-color: #ff4c4c;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.player-card button:hover {
+	background-color: #cc0000;
+}
+
+.player-card.marked::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 60%;
+	height: 60%;
+	border: 3px solid red;
+	border-radius: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 10;
+}
+
+.player-card.saved {
+	border-color: green;
+	box-shadow: 0 0 15px green;
+}
+
+.player-card.eliminated {
+	background-color: #ccc;
+	color: #999;
+	border-color: #999;
+}
+
+.player-card.eliminated .role {
+	background-color: #999;
+}
+
+.player-card.eliminated::after {
+	content: "\2716"; /* Unicode for cross mark */
+	font-size: 50px;
+	color: red;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	opacity: 0.7;
+}
+
+.identity-card {
+	width: 300px;
+	height: 400px;
+	background-color: #fff;
+	border: 2px solid #ccc;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.identity-card h3 {
+	margin: 0;
+}
+
+.identity-card .role {
+	margin-top: 20px;
+	padding: 10px;
+	background-color: #4CAF50;
+	color: #fff;
+	border-radius: 5px;
+}
+.identity-card button {
+	margin-top: 20px;
+	padding: 10px 20px;
+	background-color: #007BFF;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.identity-card button:hover {
+	background-color: #0056b3;
+}
+
+switch-phase {
+	width: 100%;
+	text-align: center;
+	margin-top: 20px;
+}
+
+.switch-phase button {
+	padding: 10px 20px;
+	font-size: 16px;
+	background-color: #007bff;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.switch-phase button:hover {
+	background-color: #0056b3;
+}
+
+.chat-box {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-height: 300px;
+    background-color: #222;
+    color: #fff;
+    border-top: 2px solid #333;
+    transition: max-height 0.3s ease;
+    overflow: hidden;
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #333;
+    cursor: pointer;
+}
+
+.chat-header span {
+    font-weight: bold;
+}
+
+.chat-header .toggle-chat {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.chat-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 10px;
+}
+
+.chat-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.chat-content li {
+    margin: 5px 0;
+    padding: 5px 10px;
+    background-color: #444;
+    border-radius: 5px;
+}
