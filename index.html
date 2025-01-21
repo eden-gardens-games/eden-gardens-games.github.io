@@ -110,13 +110,26 @@
             document.getElementById('hostSection').style.display = 'block';
 			const docRef = gamesRef.doc(gameCode);
 			docRef.set({
+			  alert : "",
+			  chat : [],
+			  day : 1,
+			  detectCheck : false,
+			  docSaved : "",
 			  gamePhase : "start",
 			  host : hostName,
 			  hostId : hostID,
 			  ids : [],
+			  mKill : [],
+			  mPoint : [],
+			  mafiaKilled : [],
 			  players : [],
 			  roles : [],
-			  status: []
+			  saveRound : false,
+			  status: [],
+			  votePh : false,
+			  votes : [],
+			  voting : "no",
+			  winner : ""
 			}).then(() => {
 					window.location.href = `Mafia.html?gameCode=${gameCode}&id=${hostID}`;
 				})

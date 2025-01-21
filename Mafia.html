@@ -70,8 +70,6 @@
 					alert("You already saved this person last round! Choose another");
 				}
 				else{
-					const playerCard = document.getElementById(playerId);
-					playerCard.classList.add('saved');
 					docRef.update({
 						saveRound : true,
 						docSaved : playerId
@@ -180,6 +178,7 @@
 				const status = doc.data().status;
 				var numMafia = 0;
 				var numTotal = 0;
+				var votesT = [];
 				for(var i=0; i<roles.length; i++){
 					if(status[i] == "no"){
 						numTotal += 1;
@@ -200,6 +199,7 @@
 				for(var i=0; i<players.length; i++){
 					tempmP.push(false);
 					tempmK.push(false);
+					votesT.push("");
 				}
 				if(gamePhase == "night"){
 					gamePhase = "day";
@@ -230,6 +230,7 @@
 					chat : chat,
 					day : day,
 					alert : "",
+					votes : votesT,
 					winner : winner
 				})
 			})
@@ -238,6 +239,9 @@
 			gamePhase = "night";
 			const mafiaCount = document.getElementById('mafia-count').value;
 			const docRef = gamesRef.doc(params['gameCode']);
+			var temp7 = [];
+			var temp8 = [];
+			var temp9 = [];
 			docRef.get().then(doc => {
 				if(doc.exists) {
 					const final_players = doc.data()?.players;
@@ -257,6 +261,9 @@
 						else {
 							final_roles.push("Villager");
 						}
+						temp7.push(false);
+						temp8.push("");
+						temp9.push("no");
 					}
 					chat.push({text: "The game has started!", time: new Date().toLocaleTimeString()});
 				}
@@ -264,7 +271,11 @@
 				docRef.update({
 					gamePhase : gamePhase,
 					roles : final_roles,
-					chat : chat
+					chat : chat,
+					mKill : temp7,
+					mPoint : temp7,
+					votes : temp8,
+					status : temp9
 				}).then(() => {	
 				})
 			})
@@ -308,6 +319,7 @@
 						chat.push({text: "No one could be voted out!", time: new Date().toLocaleTimeString()});
 						docRef.update({
 							votePh: votePh,
+							votes: votes,
 							chat: chat
 						})	
 					}
@@ -551,9 +563,13 @@
 		function uP(){
 			var timeout = 1000;
 			const targetDiv = document.getElementById('vote-card');
+			const targetDiv2 = document.getElementById('mafia-count');
 			docRef.get().then(doc => {
 				const vP = doc.data()?.votePh;
+				const gPh = doc.data()?.gamePhase;
 				if(!isHost && vP && targetDiv != null){
+				}
+				else if(isHost && gPh == "start" && targetDiv2 != null){
 				}
 				else{
 					updatePhase();
