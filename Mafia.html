@@ -31,28 +31,106 @@
 		var votePh = false;
 		var st3 = ``;
 		var docSaved = "";
-		var mafiaKilled = "";
+		var mafiaKilled = [];
 		var players = [];
 		var status = [];
+		var chat = [];
+		var day = 1;
+		var prevAlert = "";
+		var winner = "";
+		const frequency = (arr, item) => {
+			return arr.filter(x => x === item).length;
+		};
+		function submitVote() {
+            const voteCard = document.getElementById("vote-card");
+            const form = document.getElementById("vote-form");
+            const selected = form.vote.value;
+            if (selected) {
+                voteCard.classList.add("voted");
+                form.style.display = "none";
+				const docRef = gamesRef.doc(params['gameCode']);
+				docRef.get().then(doc => {
+					const ids = doc.data()?.ids;
+					const votes = doc.data()?.votes;
+					votes[ids.indexOf(params['id'])] = selected;
+					docRef.update({
+						votes : votes
+					}).then(() => {
+					})
+				})
+            } else {
+                alert("Please select a player to vote for.");
+            }
+        }
 		function savePlayer(playerId) {
 			const docRef = gamesRef.doc(params['gameCode']);
 			docRef.get().then(doc => {
 				const docSaved = doc.data()?.docSaved;
 				if(playerId == docSaved){
+					alert("You already saved this person last round! Choose another");
 				}
 				else{
 					const playerCard = document.getElementById(playerId);
 					playerCard.classList.add('saved');
+					docRef.update({
+						saveRound : true,
+						docSaved : playerId
+					})
 				}
 			})
             
         }
+		function detectPlayer(role) {
+			const docRef = gamesRef.doc(params['gameCode']);
+			docRef.update({
+				detectCheck : true
+			}).then(() => {
+				if(role == "Mafia"){
+					alert("Yes, this person is Mafia");
+				}
+				else{
+					alert("No, this person is not Mafia");
+				}
+			})
+        }
+		function pointPlayer(player){
+			const docRef = gamesRef.doc(params['gameCode']);
+			docRef.get().then(doc => {
+				const mP = doc.data()?.mPoint;
+				const ids = doc.data()?.ids;
+				const ps = doc.data()?.players;
+				const st = `${ps[ids.indexOf(params['id'])]} points at ${player}`;
+				mP[ids.indexOf(params['id'])] = true;
+				docRef.update({
+					mPoint : mP,
+					alert : st
+				})
+			})
+		}
+		function killPlayer(player){
+			const docRef = gamesRef.doc(params['gameCode']);
+			docRef.get().then(doc => {
+				const mK = doc.data()?.mKill;
+				var maKd = doc.data()?.mafiaKilled;
+				const ids = doc.data()?.ids;
+				maKd.push(player);
+				mK[ids.indexOf(params['id'])] = true;
+				docRef.update({
+					mKill : mK,
+					mafiaKilled : maKd
+				})
+			})
+		}
 		function toggleChat() {
-			const chatBox = document.querySelector('.chat-box');
-			if (chatBox.style.maxHeight === '40px') {
-				chatBox.style.maxHeight = '300px';
+			const chatContent = document.querySelector(".chat-content");
+			const toggleButton = document.querySelector(".toggle-chat");
+
+			if (chatContent.style.display === "none" || chatContent.style.display === "") {
+				chatContent.style.display = "block";
+				toggleButton.textContent = "×"; // Change button icon
 			} else {
-				chatBox.style.maxHeight = '40px';
+				chatContent.style.display = "none";
+				toggleButton.textContent = "_"; // Reset button icon
 			}
 		}
 		function getParams() {
@@ -88,23 +166,71 @@
 		}
 		function switchPhase(){
 			const docRef = gamesRef.doc(params['gameCode']);
+			const saveRound = false;
+			var tempmP = [];
+			var tempmK = [];
 			docRef.get().then(doc => {
 				gamePhase = doc.data()?.gamePhase;
 				docSaved = doc.data()?.docSaved;
 				mafiaKilled = doc.data()?.mafiaKilled;
 				players = doc.data()?.players;
-				status = doc.data()?.status;
-				if(gamePhase == "night"){
-					gamePhase = "day"
-					if(mafiaKilled[0] != docSaved){
-						status[players.indexOf(mafiaKilled)] = "yes";
+				chat = doc.data().chat;
+				day = doc.data().day;
+				const roles = doc.data().roles;
+				const status = doc.data().status;
+				var numMafia = 0;
+				var numTotal = 0;
+				for(var i=0; i<roles.length; i++){
+					if(status[i] == "no"){
+						numTotal += 1;
+						if(roles[i] == "Mafia"){
+							numMafia += 1;
+						}	
 					}
 				}
-				else{
+				if(numMafia == 0){
+					gamePhase = "end";
+					winner = "Village";
+				}
+				else if(numTotal <= 2*numMafia){
+					gamePhase = "end";
+					winner = "Mafia";
+				}
+				const stat = doc.data()?.status;
+				for(var i=0; i<players.length; i++){
+					tempmP.push(false);
+					tempmK.push(false);
+				}
+				if(gamePhase == "night"){
+					gamePhase = "day";
+					if((frequency(mafiaKilled, mafiaKilled[0]) != mafiaKilled.length) || (mafiaKilled.length == 0) || (mafiaKilled[0] == "")){
+						chat.push({text: "Mafia failed to kill", time: new Date().toLocaleTimeString()});
+					}
+					else if(mafiaKilled[0] != docSaved){
+						stat[players.indexOf(mafiaKilled[0])] = "yes";
+						chat.push({text: `Mafia killed ${mafiaKilled[0]}!`, time: new Date().toLocaleTimeString()});
+					}
+					else{
+						chat.push({text: "Mafia tried to kill, but the doctor was there to save!", time: new Date().toLocaleTimeString()});
+					}
+					day += 1;
+					chat.push({text: `Day ${day}`, time: new Date().toLocaleTimeString()});
+				}
+				else if(gamePhase == "day"){
 					gamePhase = "night"
 				}
 				docRef.update({
-					gamePhase : gamePhase
+					detectCheck : false,
+					saveRound : saveRound,
+					gamePhase : gamePhase,
+					status : stat,
+					mafiaKilled : [],
+					mPoint : tempmP,
+					mKill : tempmK,
+					chat : chat,
+					day : day,
+					alert : "",
+					winner : winner
 				})
 			})
 		}
@@ -114,8 +240,9 @@
 			const docRef = gamesRef.doc(params['gameCode']);
 			docRef.get().then(doc => {
 				if(doc.exists) {
-					var final_players = doc.data()?.players;
+					const final_players = doc.data()?.players;
 					var final_roles = []
+					chat = doc.data()?.chat;
 					for(let i=0; i<final_players.length; i++){
 						if(i<mafiaCount){
 							final_roles.push("Mafia");
@@ -131,32 +258,82 @@
 							final_roles.push("Villager");
 						}
 					}
+					chat.push({text: "The game has started!", time: new Date().toLocaleTimeString()});
 				}
 				final_roles = shuffle(final_roles);
 				docRef.update({
 					gamePhase : gamePhase,
 					roles : final_roles,
+					chat : chat
 				}).then(() => {	
 				})
 			})
 		}
 		function voting(){
+			const docRef = gamesRef.doc(params['gameCode']);
 			if(votePh){
 				votePh = false;
+				docRef.get().then(doc => {
+					const votes = doc.data()?.votes;
+					const players = doc.data()?.players;
+					const status = doc.data()?.status;
+					chat = doc.data()?.chat;
+					var max_val = -1;
+					var max_player = "";
+					for(let i=0; i<players.length; i++){
+						if(frequency(votes,players[i]) > max_val){
+							max_val = frequency(votes,players[i]);
+							max_player = players[i];
+						}
+						else if(frequency(votes,players[i]) == max_val){
+							max_player = "";
+						}
+					}
+					for(let i=0; i<votes.length; i++){
+						votes[i] = "";
+					}
+					if(max_val > 0 && max_player != ""){
+						status[players.indexOf(max_player)] = "yes";
+						chat.push({text: `${max_player} was eliminated by Voting!`, time: new Date().toLocaleTimeString()});
+						docRef.update({
+							status: status,
+							votePh: votePh,
+							votes: votes,
+							chat: chat
+						}).then(() => {
+						})
+						
+					}
+					else{
+						chat.push({text: "No one could be voted out!", time: new Date().toLocaleTimeString()});
+						docRef.update({
+							votePh: votePh,
+							chat: chat
+						})	
+					}
+				})
 			}
 			else{
 				votePh = true;
-			}
-			const docRef = gamesRef.doc(params['gameCode']);
 				docRef.update({
 					votePh : votePh
 				}).then(() => {
 				})
+			}		
 		}
 		function updatePhase(){
 			const docRef = gamesRef.doc(params['gameCode']);
 			docRef.get().then(doc => {
 			gamePhase = doc.data()?.gamePhase;
+			const messages = doc.data().chat;
+			const winn = doc.data().winner;
+			const chatMessages = document.getElementById("chat-messages");
+			chatMessages.innerHTML = "";
+			messages.forEach(message => {
+				const listItem = document.createElement("li");
+				listItem.innerHTML = `<span style="font-size: 0.8em; color: #aaa;">${message.time}: </span><span>${message.text}</span> `;
+				chatMessages.appendChild(listItem);
+			});
 			if(gamePhase == "start"){
 				if(isHost){
 					const st1 = `<div class = "identity-card"><h3>Game is yet to start</h3><input type="number" id="mafia-count" placeholder="Number of Mafia" min="1"><button onclick="startGame()">Start Game</button></div>`;
@@ -168,11 +345,13 @@
 				}
 			}
 			else if(gamePhase == "day"){
+				const fi = doc.data()?.ids;
+				const fp = doc.data()?.players;
+				const fr = doc.data()?.roles;
+				const fs = doc.data()?.status;
+				const vP = doc.data()?.votePh;
+				const vs = doc.data()?.votes;
 				if(isHost){
-					const fp = doc.data()?.players;
-					const fr = doc.data()?.roles;
-					const fs = doc.data()?.status;
-					const vP = doc.data()?.votePh;
 					st3 = ``;
 					for(let i=0; i<fp.length; i++){
 						if(fs[i] == "no"){
@@ -192,8 +371,47 @@
 					}
 				}
 				else{
-					
-					
+					const role = fr[fi.indexOf(params['id'])];
+					const status = fs[fi.indexOf(params['id'])];
+					const vote = vs[fi.indexOf(params['id'])];
+					if(status == "no"){
+						if(vP && vote == ""){
+							st3 = `<div class="vote-card" id="vote-card"><h3>Vote for a Player to be Eliminated</h3><form id="vote-form">`;
+							for(let i=0; i<fp.length; i++){
+								if(fs[i] == "no"){
+									st3 += `<label><input type="radio" name="vote" value=${fp[i]}> ${fp[i]}</label>`;
+								}
+							}
+							st3 += `<button type="button" onclick="submitVote()">Vote</button></form></div>`;
+							document.getElementById('main-content').innerHTML = st3;
+						}
+						else if(vP){
+							st3 = `<div class="vote-card" id="vote-card"><h3>Vote for a Player to be Eliminated</h3><form id="vote-form" style="display: none;">`;
+							for(let i=0; i<fp.length; i++){
+								if(fs[i] == "no"){
+									st3 += `<label><input type="radio" name="vote" value=${fp[i]}> ${fp[i]}</label>`;
+								}
+							}
+							st3 += `<button type="button" onclick="submitVote()">Vote</button></form><p>You have already voted!</p></div>`;
+							document.getElementById('main-content').innerHTML = st3;
+						}
+						else{
+							st3 = ``;
+							for(let i=0; i<fp.length; i++){
+								if(fs[i] == "no"){
+									st3 += `<div class="player-card" id="player${i+1}"><h4>${fp[i]}</h4></div>`;
+								}
+								else{
+									st3 += `<div class="player-card eliminated" id="player${i+1}"><h4>${fp[i]}</h4></div>`;
+								}
+							}		
+							document.getElementById('main-content').innerHTML = st3;
+						}
+					}
+					else{
+						const st2 = `<div class = "identity-card"><p>You have been</p><h3>Eliminated</h3></div>`;
+						document.getElementById('main-content').innerHTML = st2;
+					}
 				}
 			}
 			else if(gamePhase == "night"){
@@ -201,6 +419,12 @@
 				const fr = doc.data()?.roles;
 				const fs = doc.data()?.status;
 				const fi = doc.data()?.ids;
+				const sr = doc.data()?.saveRound;
+				const dc = doc.data()?.detectCheck;
+				const mP = doc.data()?.mPoint;
+				const mK = doc.data()?.mKill;
+				const mkill = doc.data()?.mafiaKilled;
+				const al = doc.data()?.alert;
 				if(isHost){
 					st3 = ``;
 					for(let i=0; i<fp.length; i++){
@@ -217,12 +441,17 @@
 				else {
 					const role = fr[fi.indexOf(params['id'])];
 					const status = fs[fi.indexOf(params['id'])];
+					const mp = mP[fi.indexOf(params['id'])];
+					const mk = mK[fi.indexOf(params['id'])];
 					if(status == "no"){
 						if(role == "Doctor"){
 							st3 = ``;
 							for(let i=0; i<fp.length; i++){
-								if(fs[i] == "no"){
-									st3 += `<div class="player-card" id="player${i+1}"><h4>${fp[i]}</h4><button onclick="savePlayer('player${i+1}')">Save</button></div>`;
+								if(fs[i] == "no" && !sr){
+									st3 += `<div class="player-card" id="player${i+1}"><h4>${fp[i]}</h4><button class = 'save-btn' onclick="savePlayer('${fp[i]}')">Save</button></div>`;
+								}
+								else if(fs[i] == "no" && sr){
+									st3 += `<div class="player-card" id="player${i+1}"><h4>${fp[i]}</h4></div>`;
 								}
 								else{
 									st3 += `<div class="player-card eliminated" id="player${i+1}"><h4>${fp[i]}</h4></div>`;
@@ -233,7 +462,10 @@
 						if(role == "Detective"){
 							st3 = ``;
 							for(let i=0; i<fp.length; i++){
-								if(fs[i] == "no"){
+								if(fs[i] == "no" && !dc){
+									st3 += `<div class="player-card" id="player${i+1}"><h4>${fp[i]}</h4><button class = 'detect-btn' onclick="detectPlayer('${fr[i]}')">Detect</button></div>`;
+								}
+								else if(fs[i] == "no" && dc){
 									st3 += `<div class="player-card" id="player${i+1}"><h4>${fp[i]}</h4></div>`;
 								}
 								else{
@@ -244,9 +476,21 @@
 						}
 						if(role == "Mafia"){
 							st3 = ``;
+							if(al != "" && al != prevAlert){
+								alert(al);
+								prevAlert = al;
+							}
 							for(let i=0; i<fp.length; i++){
 								if(fs[i] == "no"){
-									st3 += `<div class="player-card" id="player${i+1}"><h4>${fp[i]}</h4></div>`;
+									if(!mp){
+										st3 += `<div class="player-card" id="player${i+1}"><h4>${fp[i]}</h4><button class = 'point-btn' onclick="pointPlayer('${fp[i]}')">Point</button></div>`;
+									}
+									else if(mp && !mk){
+										st3 += `<div class="player-card" id="player${i+1}"><h4>${fp[i]}</h4><button class = 'point-btn' onclick="pointPlayer('${fp[i]}')">Point</button><button class = 'kill-btn' onclick="killPlayer('${fp[i]}')">Eliminate</button></div>`;
+									}
+									else{
+										st3 += `<div class="player-card" id="player${i+1}"><h4>${fp[i]}</h4></div>`;
+									}
 								}
 								else{
 									st3 += `<div class="player-card eliminated" id="player${i+1}"><h4>${fp[i]}</h4></div>`;
@@ -274,15 +518,10 @@
 				}
 			}
 			else {
-				if(isHost){
-				
-				}
-				else{
-				
-				}
+				const st6 = `<div class = "identity-card"><h3>Game has ended!</h3><p>${winn} won the game!</p></div>`;
+				document.getElementById('main-content').innerHTML = st6;
 			}
-			})
-			setTimeout(updatePhase, 1000);
+			})		
 		}
 		params = getParams();
 		const docRef = gamesRef.doc(params['gameCode']);
@@ -309,7 +548,20 @@
 				}
 			}
 		})
-		updatePhase();
+		function uP(){
+			var timeout = 1000;
+			const targetDiv = document.getElementById('vote-card');
+			docRef.get().then(doc => {
+				const vP = doc.data()?.votePh;
+				if(!isHost && vP && targetDiv != null){
+				}
+				else{
+					updatePhase();
+				}
+			})
+			setTimeout(uP,timeout);
+		}
+		uP();
 	</script>
 	<div class="header">
         <h3 id='game-code'>Welcome to Mafia!</h3>
@@ -333,15 +585,15 @@
 		
     </div>
 	<div class="chat-box">
-    <div class="chat-header">
-        <span>Chat</span>
-        <button class="toggle-chat" onclick="toggleChat()">_</button>
-    </div>
-    <div class="chat-content">
-        <ul id="chat-messages">
-            <!-- Chat messages will appear here -->
-        </ul>
-    </div>
-</div>
+		<div class="chat-header"  onclick="toggleChat()">
+			<span>Chat</span>
+			<button class="toggle-chat">_</button>
+		</div>
+		<div class="chat-content">
+			<ul id="chat-messages">
+				<!-- Chat messages will appear here -->
+			</ul>
+		</div>
+	</div>
 </body>
 </html>
