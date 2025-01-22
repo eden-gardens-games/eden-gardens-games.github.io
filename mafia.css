@@ -24,7 +24,7 @@ body {
     }
 	
 	.identity-card {
-        width: 90%; /* Take up most of the screen width on mobile */
+        width: 50%; /* Take up most of the screen width on mobile */
         height: auto; /* Allow flexible height */
         padding: 5px; /* Add some internal spacing */
         box-sizing: border-box;
