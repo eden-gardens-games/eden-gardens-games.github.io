@@ -62,6 +62,10 @@
                 alert("Please select a player to vote for.");
             }
         }
+		function toggleSidebar() {
+			const sidebar = document.querySelector('.sidebar');
+			sidebar.classList.toggle('collapsed');
+		}
 		function savePlayer(playerId) {
 			const docRef = gamesRef.doc(params['gameCode']);
 			docRef.get().then(doc => {
@@ -580,6 +584,7 @@
 		uP();
 	</script>
 	<div class="header">
+	<button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
         <h3 id='game-code'>Welcome to Mafia!</h3>
     </div>
     <div class="container">
