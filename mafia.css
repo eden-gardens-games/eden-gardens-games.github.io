@@ -20,6 +20,7 @@ body {
     .main-content {
         flex-wrap: wrap;
         justify-content: center;
+		padding: 5px;
     }
 }
 
