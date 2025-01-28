@@ -3,178 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mafia Game</title>
+    <title>Eden Gardens Hub</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-        header {
+            background-color: #f7faff;
+            color: #333;
             text-align: center;
-            margin-bottom: 20px;
         }
-        .container {
+
+        h1 {
+            font-size: 3rem;
+            color: #0056b3;
+            margin: 20px 0;
+        }
+
+        .news-ticker {
+            background-color: #ffd700;
+            color: #000;
+            padding: 10px 0;
+            font-weight: bold;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .news-ticker span {
+            display: inline-block;
+            animation: ticker 15s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .button-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
             max-width: 800px;
-            width: 100%;
-            padding: 20px;
-            background: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+            margin: 30px auto;
         }
-        button {
-            background-color: #007BFF;
-            color: white;
+
+        .hub-button {
+            background: linear-gradient(145deg, #d0efff, #a9d8f3);
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2), -4px -4px 8px #ffffff;
             border: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            border-radius: 5px;
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
             cursor: pointer;
+            transition: 0.3s ease;
         }
-        button:hover {
-            background-color: #0056b3;
+
+        .hub-button:hover {
+            background: #b3e0ff;
+            color: #004080;
+            transform: scale(1.05);
         }
-        .player-list {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+
+        .hub-button:active {
+            background: #a0d0e0;
+            box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.2);
         }
+
     </style>
+    <script>
+        function showComingSoonAlert() {
+            alert("This feature is in the works! If you have any ideas, feel free to pitch in.");
+        }
+    </script>
 </head>
 <body>
-    <header>
-        <h1>Welcome to Mafia Game</h1>
-        <p>Host, setup, and play with your friends online!</p>
-    </header>
-    <div class="container">
-        <h2>Start a New Game</h2>
-		<label for="hostName">Enter Your Name:</label>
-        <input type="text" id="hostName" placeholder="Your Name" />
-        <button id="hostGameBtn">Host Game</button>
-        <div id="hostSection" style="display: none;">
-            <p>Your Game Code: <span id="gameCodeDisplay"></span></p>
-            <p>Share this code with your friends so they can join.</p>
-            <h3>Players Joined:</h3>
-            <div class="player-list" id="playerList">No players yet.</div>
-        </div>
+    <h1>Eden Gardens Hub</h1>
 
-        <h2>Join a Game</h2>
-        <label for="playerName">Enter Your Name:</label>
-        <input type="text" id="playerName" placeholder="Your Name" />
-        <label for="gameCode">Enter Game Code:</label>
-        <input type="text" id="gameCode" placeholder="Game Code" />
-        <button id="joinGameBtn">Join Game</button>
-
-        <div id="joinSection" style="display: none;">
-            <h3>Players in Game:</h3>
-            <div class="player-list" id="joinedPlayerList">Loading players...</div>
-        </div>
+    <div class="news-ticker">
+        <span>Welcome to Eden Gardens Hub! &emsp;&emsp;&emsp;&emsp;&emsp; New games coming soon! &emsp;&emsp;&emsp;&emsp;&emsp; Stay tuned for exciting updates! &emsp;&emsp;&emsp;&emsp;&emsp; Superbowl on 9th Feb! Any plans?</span>
     </div>
-	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-	<script>
-		const firebaseConfig = {
-			apiKey: "AIzaSyBxotqOEdkMoZfwgQtcWsVP2DcivfFinqM",
-			authDomain: "mafia-7afa1.firebaseapp.com",
-			projectId: "mafia-7afa1",
-			storageBucket: "mafia-7afa1.firebasestorage.app",
-			messagingSenderId: "350568178297",
-			appId: "1:350568178297:web:8b0fa1721a336f5d232aa8",
-			measurementId: "G-ZG0SK1MV9F"
-		};
-		firebase.initializeApp(firebaseConfig);
-    </script>
-    <script>
-		const db = firebase.firestore();
-		const gamesRef = db.collection('mafia');
-        function generateGameCode() {
-            return Math.random().toString(36).substring(2, 8).toUpperCase();
-        }
-        document.getElementById('hostGameBtn').addEventListener('click', () => {
-            const gameCode = generateGameCode();
-			const hostName = document.getElementById('hostName').value.trim();
-			const hostID = generateGameCode();
-			if (!hostName) {
-                alert('Please enter your name.');
-                return;
-            }
-            document.getElementById('gameCodeDisplay').textContent = gameCode;
-            document.getElementById('hostSection').style.display = 'block';
-			const docRef = gamesRef.doc(gameCode);
-			docRef.set({
-			  alert : "",
-			  chat : [],
-			  day : 1,
-			  detectCheck : false,
-			  docSaved : "",
-			  gamePhase : "start",
-			  host : hostName,
-			  hostId : hostID,
-			  ids : [],
-			  mKill : [],
-			  mPoint : [],
-			  mafiaKilled : [],
-			  players : [],
-			  roles : [],
-			  saveRound : false,
-			  status: [],
-			  votePh : false,
-			  votes : [],
-			  voting : "no",
-			  winner : ""
-			}).then(() => {
-					window.location.href = `Mafia.html?gameCode=${gameCode}&id=${hostID}`;
-				})
-        });
 
-        document.getElementById('joinGameBtn').addEventListener('click', () => {
-            const playerName = document.getElementById('playerName').value.trim();
-            const gameCode = document.getElementById('gameCode').value.trim();
-            if (!playerName) {
-                alert('Please enter your name.');
-                return;
-            }
-
-            if (!gameCode) {
-                alert('Please enter a valid game code.');
-                return;
-            }
-			const docRef = gamesRef.doc(gameCode);
-			docRef.get().then(doc => {
-				if (doc.exists) {
-					document.getElementById('joinSection').style.display = 'block';
-					var ps = doc.data()?.players;
-					var pr = doc.data()?.roles;
-					var pi = doc.data()?.ids;
-					var pt = doc.data()?.status;
-					ps.push(playerName);
-					pr.push("");
-					pt.push("no");
-					const psID = generateGameCode();
-					pi.push(psID);
-					docRef.update({
-					  players : ps,
-					  roles : pr,
-					  ids : pi,
-					  status : pt
-					}).then(() => {
-							window.location.href = `Mafia.html?gameCode=${gameCode}&id=${psID}`;
-						})
-					console.log("Document data:", doc.data().players);
-				} else {
-					alert('Wrong game code.');
-					console.log("No such document!");
-				}
-			})
-        });
-    </script>
+    <div class="button-container">
+        <button class="hub-button" onclick="location.href='IBalance.html'">Bill Split</button>
+        <button class="hub-button" onclick="location.href='IMafia.html'">Mafia</button>
+        <button class="hub-button" onclick="location.href='ICodenames.html'">Codenames</button>
+        <button class="hub-button" onclick="location.href='ISpyfall.html'">Spyfall</button>
+        <button class="hub-button" onclick="showComingSoonAlert()">Coming Soon</button>
+        <button class="hub-button" onclick="showComingSoonAlert()">Coming Soon</button>
+    </div>
 </body>
 </html>

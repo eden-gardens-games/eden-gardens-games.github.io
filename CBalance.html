@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Team Balance Management</title>
+    <style>
+		#block-view {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.8);
+			color: white;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			z-index: 9999;
+		}
+
+		.block-message h1 {
+			font-size: 3em;
+			margin-bottom: 10px;
+		}
+
+		.block-message p {
+			font-size: 1.2em;
+		}
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9fb;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-top: 20px;
+        }
+
+        #page2 {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .year-select-container {
+            display: flex;
+            justify-content: flex-end;
+            width: 90%;
+            margin-bottom: 10px;
+			align-items: center;
+        }
+
+        #year-select {
+            font-size: 1rem;
+            padding: 5px 10px;
+            border: 1px solid #4CAF50;
+            border-radius: 5px;
+            background: #f9f9fb;
+            color: #4CAF50;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #year-select:hover {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .table-container {
+            position: relative;
+            width: 90%;
+            max-height: 500px;
+            margin: auto;
+            overflow: auto;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        th {
+            background: linear-gradient(90deg, #4CAF50, #66bb6a);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        td:first-child, th:first-child {
+            position: sticky;
+            left: 0;
+            background: #ffffff;
+			color: #4CAF50;
+            z-index: 1;
+            font-weight: bold;
+            width: 200px;
+        }
+		
+		
+		th:first-child {
+			position: sticky;
+			left: 0;
+			top: unset;
+			z-index: 3; /* Higher than td:first-child */
+			background: #4CAF50; /* Match the table header background */
+			color: white;
+		}
+		
+        td:first-child {
+            cursor: pointer;
+            color: #4CAF50;
+            transition: color 0.3s;
+        }
+
+        td:first-child:hover {
+            color: #66bb6a;
+        }
+
+        tr:nth-child(even) td {
+            background: #f9f9f9;
+        }
+
+        tr:hover td {
+            background: #f1f1f1;
+        }
+
+        /* Dynamic table height handling */
+        .table-container table {
+            max-height: 450px; /* For 10 rows max */
+        }
+    </style>
+</head>
+<body>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBxotqOEdkMoZfwgQtcWsVP2DcivfFinqM",
+        authDomain: "mafia-7afa1.firebaseapp.com",
+        projectId: "mafia-7afa1",
+        storageBucket: "mafia-7afa1.firebasestorage.app",
+        messagingSenderId: "350568178297",
+        appId: "1:350568178297:web:8b0fa1721a336f5d232aa8",
+        measurementId: "G-ZG0SK1MV9F"
+    };
+    firebase.initializeApp(firebaseConfig);
+</script>
+<script>
+    const db = firebase.firestore();
+    const balRef = db.collection('balanceCheck');
+    params = getParams();
+    const teamRef = balRef.doc(params['team'].replace('^%',' ');
+    const code = params['pin'];
+    window.onload = validateParameters;
+	
+    function validateParameters() {
+        teamRef.get().then(doc => {
+            const pin = doc.data()?.pin;
+            if (pin != code) {
+                alert("Wrong pin. Go back and try again!");
+                blockView();
+            } else {
+                updatePage();
+            }
+        });
+    }
+
+	function sortByDate(a, b) {
+		const combined = a.map((value, index) => ({ key: value, date: new Date(b[index]) }));
+		combined.sort((x, y) => x.date - y.date);
+		const sortedA = combined.map(item => item.key);
+		return sortedA;
+	}
+	
+    function getParams() {
+        var idx = document.URL.indexOf('?');
+        var params = [];
+        if (idx != -1) {
+            var pairs = document.URL.substring(idx + 1, document.URL.length).split('&');
+            for (var i = 0; i < pairs.length; i++) {
+                const ind = pairs[i].indexOf('=');
+                const temp1 = pairs[i].slice(0, ind);
+                const temp2 = pairs[i].slice(ind + 1, pairs[i].length);
+                params[temp1] = temp2;
+            }
+        }
+        return params;
+    }
+
+    function handleClick(player) {
+		window.location.href = `PBalance.html?team=${params['team']}&pin=${code}&player=${player}`;
+    }
+
+    function blockView() {
+        const blockView = document.getElementById('block-view');
+        blockView.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function populateTable() {
+        const headerRow = document.getElementById('header-row');
+		headerRow.innerHTML = "";
+        const tableBody = document.getElementById('table-body');
+		tableBody.innerHTML = "";
+		let year = document.getElementById('year-select').value;
+		if(year == "" || year == "all"){
+			year = "All";
+		}
+        teamRef.get().then(doc => {
+            const gT = doc.data()?.gameTime;
+            const pL = doc.data()?.playerList;
+            const cB = doc.data().currBalance;
+            const gP = doc.data().gamePlayers;
+			const gTn = sortByDate(gT,gT);
+			let hD = [];
+			if(year != "All"){
+				let gTf = [];
+				for(let k = 0; k < gTn.length; k++){
+					const yr = gTn[k].slice(0,4);
+					if(year == yr){
+						gTf.push(gTn[k]);
+					}
+				}
+				hD = ['Name', 'Current Balance'].concat(gTf);
+			}
+			else{
+				hD = ['Name', 'Current Balance'].concat(gTn);
+			}
+            hD.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                headerRow.appendChild(th);
+            });
+            for (let i = 0; i < pL.length; i++) {
+                const tr = document.createElement('tr');
+                const td1 = document.createElement('td');
+                td1.textContent = pL[i];
+                td1.style.cursor = 'pointer';
+                td1.addEventListener('click', () => handleClick(pL[i]));
+                tr.appendChild(td1);
+                const td2 = document.createElement('td');
+                td2.textContent = cB[pL[i]].toFixed(2);
+                tr.appendChild(td2);
+                const attn = gP[pL[i]];
+				const att = sortByDate(attn,gT);
+				let atf = [];
+				if(year != "All"){
+					for(let k = 0; k < gTn.length; k++){
+						const yr = gTn[k].slice(0,4);
+						if(year == yr){
+							atf.push(att[k]);
+						}
+					}
+				}
+				else{
+					atf = att;
+				}
+                for (let j = 0; j < atf.length; j++) {
+                    const td = document.createElement('td');
+                    td.textContent = atf[j];
+                    tr.appendChild(td);
+                }
+                tableBody.appendChild(tr);
+            }
+        });
+    }
+
+    function updatePage() {
+        const yearSelect = document.getElementById('year-select');
+        let years = [];
+        yearSelect.innerHTML = '';
+        teamRef.get().then(doc => {
+            const gT = doc.data()?.gameTime;
+            gT.forEach(game => {
+                const year = game.slice(0, 4);
+                if (!years.includes(year)) years.push(year);
+            });
+            years.sort();
+			years.push('All');
+            years.forEach(yr => {
+                const option = document.createElement('option');
+                option.value = yr.toLowerCase().replace(/\s+/g, '-');
+                option.textContent = yr;
+                yearSelect.appendChild(option);
+            });
+            yearSelect.value = years[years.length - 1];
+            populateTable();
+			yearSelect.addEventListener("change",function(){
+				populateTable();
+			});
+        });
+    }
+	
+</script>
+<div id="block-view" style="display: none;">
+    <div class="block-message">
+        <h1>Access Denied</h1>
+        <p>You do not have permission to view this page.</p>
+    </div>
+</div>
+<div id="page2">
+    <h1>Game History</h1>
+    <div class="year-select-container">
+        <label for="year-select">Year:</label>
+        <select id="year-select"></select>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr id="header-row"></tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

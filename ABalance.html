@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Team Balance Management</title>
+	<style>
+		#block-view {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.8);
+			color: white;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			z-index: 9999;
+		}
+
+		.block-message h1 {
+			font-size: 3em;
+			margin-bottom: 10px;
+		}
+
+		.block-message p {
+			font-size: 1.2em;
+		}
+		/* General Styling */
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: #f4f4f9;
+			color: #333;
+		}
+
+		/* Header Styling */
+		h1 {
+			text-align: center;
+			font-size: 2.5rem;
+			color: #444;
+			margin-top: 20px;
+		}
+
+		/* Add Player Section */
+		.add-player {
+			width: 80%;
+			margin: 20px auto;
+			padding: 15px;
+			background: #fff;
+			border: 1px solid #ddd;
+			border-radius: 10px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+		}
+
+		.add-player label {
+			display: block;
+			font-weight: bold;
+			margin: 10px 0 5px;
+		}
+
+		.add-player input[type="text"] {
+			width: calc(100% - 20px);
+			padding: 10px;
+			margin-bottom: 15px;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+			box-sizing: border-box;
+		}
+
+		.add-player button {
+			display: inline-block;
+			background-color: #4CAF50;
+			color: white;
+			padding: 10px 20px;
+			font-size: 1rem;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		.add-player button:hover {
+			background-color: #45a049;
+		}
+
+		/* Box Container Styling */
+		.box-container {
+			display: flex;
+			justify-content: space-between;
+			gap: 20px;
+			padding: 20px;
+			max-width: 90%;
+			margin: 0 auto;
+		}
+
+		.box {
+			flex: 1;
+			background: #fff;
+			padding: 20px;
+			border: 1px solid #ddd;
+			border-radius: 10px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+		}
+
+		.box h2 {
+			font-size: 1.5rem;
+			margin-bottom: 15px;
+			color: #444;
+		}
+
+		.box label {
+			display: block;
+			margin-bottom: 5px;
+			font-weight: bold;
+		}
+
+		.box input[type="number"],
+		.box input[type="date"],
+		.box select {
+			width: 100%;
+			padding: 10px;
+			margin-bottom: 15px;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+			box-sizing: border-box;
+		}
+
+		.box button {
+			background-color: #007BFF;
+			color: white;
+			padding: 10px 20px;
+			font-size: 1rem;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		.box button:hover {
+			background-color: #0056b3;
+		}
+
+		/* Player Checkboxes Section */
+		#player-checkboxes {
+			display: flex;
+			flex-direction: column;
+			max-height: 200px;
+			overflow-y: auto;
+			border: 1px solid #ddd;
+			padding: 10px;
+			border-radius: 5px;
+			background: #f9f9f9;
+		}
+
+		#player-checkboxes label {
+			display: flex;
+			align-items: center;
+			margin-bottom: 5px;
+			cursor: pointer;
+		}
+
+		#player-checkboxes input[type="checkbox"] {
+			margin-right: 10px;
+		}
+
+	</style>
+</head>
+<body>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script>
+	const firebaseConfig = {
+		apiKey: "AIzaSyBxotqOEdkMoZfwgQtcWsVP2DcivfFinqM",
+		authDomain: "mafia-7afa1.firebaseapp.com",
+		projectId: "mafia-7afa1",
+		storageBucket: "mafia-7afa1.firebasestorage.app",
+		messagingSenderId: "350568178297",
+		appId: "1:350568178297:web:8b0fa1721a336f5d232aa8",
+		measurementId: "G-ZG0SK1MV9F"
+	};
+	firebase.initializeApp(firebaseConfig);
+</script>
+<script>
+const db = firebase.firestore();
+const balRef = db.collection('balanceCheck');
+params = getParams();
+const teamRef = balRef.doc(params['team'].replace('^%',' '));
+const code = params['pin'];
+window.onload = validateParameters;
+
+function validateParameters() {
+	teamRef.get().then(doc => {
+		const pin = doc.data()?.pin;
+		console.log(pin);
+		console.log(code);
+		if(pin != code){
+			alert("Wrong pin. Go back and try again!");
+			blockView();
+		}
+		else{
+			updatePage();
+		}
+	})
+}
+
+function getParams() {
+	var idx = document.URL.indexOf('?');
+	var params = new Array();
+	if (idx != -1) {
+		var pairs = document.URL.substring(idx+1, document.URL.length).split('&');
+		for (let i=0; i<pairs.length; i++) {
+			const ind = pairs[i].indexOf('=');
+			const temp1 = pairs[i].slice(0,ind);
+			const temp2 = pairs[i].slice(ind+1,pairs[i].length);
+			params[temp1] = temp2;
+		}
+	}
+	return params;
+}
+
+function blockView() {
+    const blockView = document.getElementById('block-view');
+    blockView.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function addPlayer(){
+	const name = document.getElementById('new-player').value;
+	const balance = parseFloat(document.getElementById('cf-balance').value);
+	if(name == ""){
+		alert("Please enter a name");
+	}
+	else{
+		teamRef.get().then(doc => {
+			const ps = doc.data()?.playerList;
+			const cf = doc.data()?.carryForward;
+			const gp = doc.data()?.gamePlayers;
+			const cb = doc.data()?.currBalance;
+			const ga = doc.data()?.gameAmount;
+			let temp = []
+			for(let i=0; i<ga.length; i++){
+				temp.push(0);
+			}
+			ps.push(name);
+			cf[name] = balance;
+			gp[name] = temp;
+			cb[name] = balance;
+			teamRef.update({
+				playerList : ps,
+				carryForward : cf,
+				gamePlayers : gp,
+				currBalance : cb
+			})
+			updatePage();
+		})
+	}
+}
+
+
+function depositAmount(){
+	const dp = document.getElementById('player-select').value;
+	const da = parseFloat(document.getElementById('deposit-amount').value);
+	const dd = document.getElementById('deposit-date').value;
+	teamRef.get().then(doc => {
+		let dP = doc.data()?.depositPlayer;
+		let dA = doc.data()?.depositAmount;
+		let dD = doc.data()?.depositTime;
+		let cB = doc.data()?.currBalance;
+		cB[dp] += da;
+		dP.push(dp);
+		dA.push(da);
+		dD.push(dd);
+		teamRef.update({
+			depositPlayer : dP,
+			depositAmount : dA,
+			depositTime : dD,
+			currBalance : cB
+		}).then(() => {
+			alert("Successfully added deposit!");
+			updatePage();
+		})
+	})
+}
+
+function recordGame(){
+	const gPlayers = getCheckedPlayers();
+	const gCost = parseFloat(document.getElementById('game-cost').value);
+	const gDate = document.getElementById('game-date').value;
+	teamRef.get().then(doc => {
+		let gA = doc.data().gameAmount;
+		let gNP = doc.data().gameNumPlayers;
+		let gP = doc.data().gamePlayers;
+		let gT = doc.data().gameTime;
+		let cB = doc.data().currBalance;
+		const pL = doc.data().playerList;
+		gA.push(gCost);
+		gT.push(gDate);
+		gNP.push(gPlayers.length);
+		let temp1 = gCost/gPlayers.length;
+		for(let i=0; i<pL.length; i++){
+			if(gPlayers.includes(pL[i])){
+				gP[pL[i]].push(1);
+				cB[pL[i]] -= temp1;
+			}
+			else{
+				gP[pL[i]].push(0);
+			}
+		}
+		teamRef.update({
+			gameAmount : gA,
+			gameNumPlayers : gNP,
+			gamePlayers : gP,
+			gameTime : gT,
+			currBalance : cB
+		}).then(() => {
+			alert("Game added successfully!");
+			updatePage();
+			
+		})
+	})
+}
+
+function getCheckedPlayers() {
+    const checkedPlayers = [];
+    const checkboxes = document.querySelectorAll('#player-checkboxes input[type="checkbox"]:checked');
+    checkboxes.forEach(checkbox => {
+        checkedPlayers.push(checkbox.value);
+    });
+    return checkedPlayers;
+}
+
+
+function populatePlayerCheckboxes(players) {
+    const playerCheckboxesContainer = document.getElementById('player-checkboxes');
+    playerCheckboxesContainer.innerHTML = '';
+    for (let i = 0; i < players.length; i += 3) {
+        const row = document.createElement('div');
+        row.style.display = 'flex';
+        row.style.justifyContent = 'space-between'; // Add space between checkboxes
+        row.style.marginBottom = '15px'; // Add vertical spacing
+        for (let j = 0; j < 3; j++) {
+            if (i + j >= players.length) break;
+            const label = document.createElement('label');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = players[i + j];
+            checkbox.id = `player-${i + j}`;
+            label.appendChild(checkbox);
+            label.appendChild(document.createTextNode(players[i + j]));
+            row.appendChild(label);
+            label.style.margin = '0 15px'; // Add spacing between label/checkbox pairs
+        }
+        playerCheckboxesContainer.appendChild(row);
+    }
+}
+
+function updatePage(){
+	const playerSelect = document.getElementById('player-select');
+	playerSelect.innerHTML = '';
+	teamRef.get().then(doc => {
+		const ps = doc.data().playerList;
+		ps.forEach(player => {
+			const option = document.createElement('option');
+			option.value = player.toLowerCase().replace(/\s+/g, '-'); // Converts to a usable value
+			option.textContent = player;
+			playerSelect.appendChild(option);
+		});
+		populatePlayerCheckboxes(ps);
+	})
+}
+
+
+</script>
+<div id="block-view" style="display: none;">
+    <div class="block-message">
+        <h1>Access Denied</h1>
+        <p>You do not have permission to view this page.</p>
+    </div>
+</div>
+<div id="page4">
+    <h1>Admin Panel</h1>
+    <div class="add-player">
+        <label for="new-player">Add Player:</label>
+        <input type="text" id="new-player">
+		<label for="new-player">Add any carryforward balance(in $):</label>
+        <input type="text" id="cf-balance">
+        <button id="add-player-btn"  onclick="addPlayer()">Add</button>
+    </div>
+    <div class="box-container">
+        <div class="box">
+            <h2>Record Deposits</h2>
+            <label for="player-select">Player:</label>
+            <select id="player-select">
+                <!-- Dynamically populate players -->
+            </select>
+            <label for="deposit-amount">Amount:</label>
+            <input type="number" id="deposit-amount">
+            <label for="deposit-date">Date:</label>
+            <input type="date" id="deposit-date">
+            <button id="record-deposit-btn" onclick="depositAmount()">Record</button>
+        </div>
+        <div class="box">
+            <h2>Record Game</h2>
+            <label for="game-cost">Court Cost:</label>
+            <input type="number" id="game-cost">
+            <label for="game-date">Date:</label>
+            <input type="date" id="game-date">
+            <div id="player-checkboxes">
+                <!-- Dynamically populate player checkboxes -->
+            </div>
+			<p></P>
+            <button id="record-game-btn" onclick="recordGame()">Record</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

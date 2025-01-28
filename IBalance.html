@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Team Balance Management</title>
+    <style>
+	/* General Styles */
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f4f4f4;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+		}
+
+		.container {
+			padding: 20px;
+			max-width: 400px;
+			background-color: #ffffff;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			border-radius: 8px;
+			text-align: center;
+		}
+
+		/* Header */
+		h1 {
+			color: #1a73e8;
+			font-size: 24px;
+			margin-bottom: 20px;
+		}
+
+		/* Form Labels */
+		label {
+			display: block;
+			font-weight: bold;
+			margin-bottom: 10px;
+			color: #333;
+		}
+
+		/* Input Fields */
+		input,
+		select {
+			width: calc(100% - 20px);
+			padding: 10px;
+			margin-bottom: 20px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			font-size: 16px;
+		}
+
+		/* Buttons */
+		button {
+			padding: 10px 15px;
+			margin: 5px;
+			border: none;
+			border-radius: 4px;
+			background-color: #1a73e8;
+			color: white;
+			font-size: 16px;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+		}
+
+		button:hover {
+			background-color: #0056b3;
+		}
+
+		#create-team-btn {
+			margin-top: 20px;
+			background-color: #34a853;
+		}
+
+		#create-team-btn:hover {
+			background-color: #2c8c43;
+		}
+
+		/* Create Team Form */
+		#create-team-form {
+			display: none;
+			margin-top: 20px;
+			padding: 15px;
+			background-color: #f9f9f9;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			text-align: left;
+		}
+
+		#create-team-form label {
+			display: block;
+			margin-bottom: 8px;
+			font-weight: bold;
+			color: #555;
+		}
+
+		#create-team-form input {
+			width: calc(100% - 20px);
+			padding: 8px;
+			margin-bottom: 15px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			font-size: 14px;
+		}
+
+		#create-team-form button {
+			margin-right: 10px;
+			padding: 8px 12px;
+			background-color: #1a73e8;
+			color: white;
+			font-size: 14px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+		}
+
+		#create-team-form button:hover {
+			background-color: #0056b3;
+		}
+
+		#create-team-form #cancel-team-btn {
+			background-color: #d9534f;
+		}
+
+		#create-team-form #cancel-team-btn:hover {
+			background-color: #c9302c;
+		}
+
+	</style>
+</head>
+<body>
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+	<script>
+		const firebaseConfig = {
+			apiKey: "AIzaSyBxotqOEdkMoZfwgQtcWsVP2DcivfFinqM",
+			authDomain: "mafia-7afa1.firebaseapp.com",
+			projectId: "mafia-7afa1",
+			storageBucket: "mafia-7afa1.firebasestorage.app",
+			messagingSenderId: "350568178297",
+			appId: "1:350568178297:web:8b0fa1721a336f5d232aa8",
+			measurementId: "G-ZG0SK1MV9F"
+		};
+		firebase.initializeApp(firebaseConfig);
+    </script>
+    <script>
+		// Array of teams
+		const db = firebase.firestore();
+		const balRef = db.collection('balanceCheck');
+		document.addEventListener('DOMContentLoaded', () => {
+		
+
+
+
+		// Page Navigation Buttons
+		const adminViewBtn = document.getElementById('admin-view-btn');
+		const commonViewBtn = document.getElementById('common-view-btn');
+		const createTeamBtn = document.getElementById('create-team-btn');
+
+		// Create Team Form Elements
+		const createTeamForm = document.getElementById('create-team-form');
+		const saveTeamBtn = document.getElementById('save-team-btn');
+		const cancelTeamBtn = document.getElementById('cancel-team-btn');
+		const newTeamNameInput = document.getElementById('new-team-name');
+		const newTeamPinInput = document.getElementById('new-team-pin');
+		const teamSelect = document.getElementById('team-select');
+
+		// Show Create Team Form
+		createTeamBtn.addEventListener('click', () => {
+			createTeamForm.style.display = 'block';
+			createTeamBtn.style.display = 'none';
+		});
+		
+		cancelTeamBtn.addEventListener('click', () => {
+			createTeamForm.style.display = 'none';
+			createTeamBtn.style.display = 'inline';
+			newTeamNameInput.value = '';
+			newTeamPinInput.value = '';
+		});
+		
+		balRef.get().then(querySnapshot => {
+			const teams = querySnapshot.docs.map(doc => doc.id);
+			teams.forEach(team => {
+				const option = document.createElement('option');
+				option.value = team.replace(/\s+/g, '^%'); // Converts to a usable value
+				option.textContent = team;
+				teamSelect.appendChild(option);
+			});
+		});
+		// Save New Team
+		saveTeamBtn.addEventListener('click', () => {
+			const newTeamName = newTeamNameInput.value.trim();
+			const newTeamPin = newTeamPinInput.value.trim();
+
+			if (!newTeamName || !newTeamPin) {
+				alert('Please fill in both the team name and PIN.');
+				return;
+			}
+
+			if (newTeamPin.length !== 4 || isNaN(newTeamPin)) {
+				alert('PIN must be a 4-digit number.');
+				return;
+			}
+			const teamRef = balRef.doc(newTeamName);
+			teamRef.set({
+				pin : btoa(newTeamPin),
+				carryForward : {},
+				currBalance : {},
+				depositAmount : [],
+				depositPlayer : [],
+				depositTime : [],
+				gameAmount : [],
+				gamePlayers : {},
+				gameTime : [],
+				playerList : [],
+				gameNumPlayers : []
+			})
+			alert(`${newTeamName} added successfully!`);
+			// Reset form and hide
+			createTeamForm.style.display = 'none';
+			createTeamBtn.style.display = 'inline';
+			newTeamNameInput.value = '';
+			newTeamPinInput.value = '';
+		});
+
+		// Admin and Common View Navigation
+		adminViewBtn.addEventListener('click', () => {
+			const team = teamSelect.value.replace('^%',' ');
+			const code = btoa(document.getElementById('team-code').value);
+			balRef.get().then(querySnapshot => {
+				const teams = querySnapshot.docs.map(doc => doc.id);
+				console.log(team)
+				console.log(teams)
+				if(teams.includes(team)){
+					const teamRef = balRef.doc(team);
+					teamRef.get().then(doc => {
+						const pin = doc.data()?.pin;
+						if(code == pin){
+							window.location.href = `ABalance.html?team=${team.replace(' ','^%')}&pin=${code}`;
+						}
+						else{
+							console.log(code);
+							console.log(pin);
+							alert("Invalid pin");
+						}
+					})
+				}
+				else{
+					alert("Some error. Try again later or contact Admin");
+				}
+			});
+		});
+
+		commonViewBtn.addEventListener('click', () => {
+			const team = teamSelect.value;
+			const code = btoa(document.getElementById('team-code').value);
+			balRef.get().then(querySnapshot => {
+				const teams = querySnapshot.docs.map(doc => doc.id);
+				if(teams.includes(team)){
+					const teamRef = balRef.doc(team);
+					teamRef.get().then(doc => {
+						const pin = doc.data()?.pin;
+						if(code == pin){
+							window.location.href = `CBalance.html?team=${team}&pin=${code}`;
+						}
+						else{
+							console.log(code);
+							console.log(pin);
+							alert("Invalid pin");
+						}
+					})
+				}
+				else{
+					alert("Some error. Try again later or contact Admin");
+				}
+			});
+		});
+		});
+	</script>
+<!-- Page 1: Team Selection -->
+<div id="page1">
+    <h1>Select Your Team</h1>
+    <label for="team-select">Team:</label>
+    <select id="team-select">
+        <!-- Add more teams here -->
+    </select>
+    <br><br>
+    <label for="team-code">Enter Code:</label>
+    <input type="password" id="team-code">
+    <br><br>
+    <button id="admin-view-btn">Admin View</button>
+    <button id="common-view-btn">Common View</button>
+    <br><br>
+    <button id="create-team-btn">Create New Team</button>
+
+    <!-- Hidden Create Team Form -->
+    <div id="create-team-form" style="display: none; margin-top: 20px;">
+        <label for="new-team-name">Team Name:</label>
+        <input type="text" id="new-team-name" placeholder="Enter team name">
+        <br><br>
+        <label for="new-team-pin">4-Digit PIN:</label>
+        <input type="password" id="new-team-pin" placeholder="Enter 4-digit PIN" maxlength="4">
+        <br><br>
+        <button id="save-team-btn">Save Team</button>
+        <button id="cancel-team-btn">Cancel</button>
+    </div>
+</div>
+
+</div>
+</body>
+</html>
