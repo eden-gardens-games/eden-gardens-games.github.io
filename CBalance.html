@@ -167,7 +167,7 @@
     const db = firebase.firestore();
     const balRef = db.collection('balanceCheck');
     params = getParams();
-    const teamRef = balRef.doc(params['team'].replace('^%',' ');
+    const teamRef = balRef.doc(params['team'].replace('^%',' '));
     const code = params['pin'];
     window.onload = validateParameters;
 	
