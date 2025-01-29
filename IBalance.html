@@ -259,7 +259,7 @@
 		});
 
 		commonViewBtn.addEventListener('click', () => {
-			const team = teamSelect.value;
+			const team = teamSelect.value.replace('^%',' ');
 			const code = btoa(document.getElementById('team-code').value);
 			balRef.get().then(querySnapshot => {
 				const teams = querySnapshot.docs.map(doc => doc.id);
@@ -269,7 +269,7 @@
 						const pin = doc.data()?.pin;
 						const pin2 = doc.data()?.apin;
 						if(code == pin || code == pin2){
-							window.location.href = `CBalance.html?team=${team}&pin=${code}`;
+							window.location.href = `CBalance.html?team=${team.replace(' ','^%')}&pin=${code}`;
 						}
 						else{
 							alert("Invalid pin");
