@@ -27,6 +27,69 @@
 		.block-message p {
 			font-size: 1.2em;
 		}
+		
+		.modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        /* Modal box styling */
+        .modal-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            max-width: 90%; /* Adjust for mobile devices */
+            width: 400px;
+        }
+
+        .modal-box h2 {
+            margin: 0 0 15px;
+            font-size: 18px; /* Slightly smaller font for mobile */
+        }
+
+        .modal-box button {
+            padding: 12px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 45%; /* Adjust button size for mobile screens */
+        }
+
+        .modal-box button.yes {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .modal-box button.no {
+            background-color: #f44336;
+            color: white;
+        }
+
+        /* Responsive design adjustments */
+        @media (max-width: 480px) {
+            .modal-box h2 {
+                font-size: 16px;
+            }
+
+            .modal-box button {
+                font-size: 14px;
+                padding: 10px;
+                width: 100%; /* Full-width buttons for smaller screens */
+            }
+        }
+		
 		/* General Styling */
 		body {
 			font-family: Arial, sans-serif;
@@ -135,10 +198,20 @@
 			border: none;
 			border-radius: 5px;
 			cursor: pointer;
+			display: block;
+			margin-bottom: 10px;
 		}
 
 		.box button:hover {
 			background-color: #0056b3;
+		}
+		
+		.box button.delete {
+			background-color: #FF0000;
+		}
+		
+		.box button.delete:hover {
+			background-color: #CC0000;
 		}
 
 		/* Player Checkboxes Section */
@@ -191,7 +264,7 @@ window.onload = validateParameters;
 
 function validateParameters() {
 	teamRef.get().then(doc => {
-		const pin = doc.data()?.pin;
+		const pin = doc.data()?.apin;
 		console.log(pin);
 		console.log(code);
 		if(pin != code){
@@ -251,8 +324,10 @@ function addPlayer(){
 				carryForward : cf,
 				gamePlayers : gp,
 				currBalance : cb
-			})
-			updatePage();
+			}).then(() => {
+				alert("Successfully added Player");
+				updatePage();
+			});
 		})
 	}
 }
@@ -281,6 +356,46 @@ function depositAmount(){
 			updatePage();
 		})
 	})
+}
+
+function deleteDeposit(){
+	const mb = document.getElementById('modal-box');
+	mb.innerHTML = "";
+	teamRef.get().then(doc => {
+		let dP = doc.data()?.depositPlayer;
+		let dA = doc.data()?.depositAmount;
+		let dD = doc.data()?.depositTime;
+		mb.innerHTML += `<h2>Are you sure you want to remove the deposit of $ ${dA[dA.length-1]} on ${dD[dD.length-1]} for ${dP[dP.length-1]}?</h2>`;
+		mb.innerHTML += `<button class="yes" onclick="delDep('Yes')">Yes</button><button class="no" onclick="delDep('No')">No</button>`;
+		confirmationModal.style.display = 'flex';
+	});
+}
+
+function delDep(answer){
+	confirmationModal.style.display = 'none';
+	if(answer == "No"){
+		alert("Action cancelled");
+	}
+	else{
+		teamRef.get().then(doc => {
+			let dP = doc.data()?.depositPlayer;
+			let dA = doc.data()?.depositAmount;
+			let dD = doc.data()?.depositTime;
+			let cB = doc.data()?.currBalance;
+			let player = dP.pop();
+			cB[player] -= dA.pop();
+			dD.pop();
+			teamRef.update({
+				depositPlayer : dP,
+				depositAmount : dA,
+				depositTime : dD,
+				currBalance : cB
+			}).then(() => {
+				alert("Successfully removed deposit!");
+				updatePage();
+			})
+		});
+	}
 }
 
 function recordGame(){
@@ -319,6 +434,54 @@ function recordGame(){
 			
 		})
 	})
+}
+
+function deleteGame(){
+	const mb = document.getElementById('modal-box');
+	mb.innerHTML = "";
+	teamRef.get().then(doc => {
+		let gA = doc.data()?.gameAmount;
+		let gT = doc.data()?.gameTime;
+		mb.innerHTML += `<h2>Are you sure you want to remove the game on ${gT[gT.length -1]} for $${gA[gA.length-1]}</h2>`;
+		mb.innerHTML += `<button class="yes" onclick="delSpe('Yes')">Yes</button><button class="no" onclick="delSpe('No')">No</button>`;
+		confirmationModal.style.display = 'flex';
+	});
+}
+
+function delSpe(answer){
+	confirmationModal.style.display = 'none';
+	if(answer == "No"){
+		alert("Action cancelled");
+	}
+	else{
+		teamRef.get().then(doc => {
+			let gA = doc.data().gameAmount;
+			let gNP = doc.data().gameNumPlayers;
+			let gP = doc.data().gamePlayers;
+			let gT = doc.data().gameTime;
+			let pL = doc.data().playerList;
+			let cB = doc.data().currBalance;
+			let temp1 = gA.pop();
+			let temp2 = gNP.pop();
+			gT.pop();
+			for(let i=0; i<pL.length; i++){
+				let temp3 = gP[pL[i]].pop();
+				if(temp3 == 1){
+					cB[pL[i]] += temp1/temp2;
+				}
+			}
+			teamRef.update({
+				gameAmount : gA,
+				gameNumPlayers : gNP,
+				gamePlayers : gP,
+				gameTime : gT,
+				currBalance : cB
+			}).then(() => {
+				alert("Game removed successfully!");
+				updatePage();
+			});
+		});
+	}
 }
 
 function getCheckedPlayers() {
@@ -372,6 +535,13 @@ function updatePage(){
 
 
 </script>
+<div class="modal-overlay" id="confirmationModal">
+	<div class="modal-box" id="modal-box">
+		<h2>Are you sure you want to delete?</h2>
+		<button class="yes" onclick="handleResponse('Yes')">Yes</button>
+		<button class="no" onclick="handleResponse('No')">No</button>
+	</div>
+</div>
 <div id="block-view" style="display: none;">
     <div class="block-message">
         <h1>Access Denied</h1>
@@ -381,7 +551,7 @@ function updatePage(){
 <div id="page4">
     <h1>Admin Panel</h1>
     <div class="add-player">
-        <label for="new-player">Add Player:</label>
+        <label for="new-player">Add Member:</label>
         <input type="text" id="new-player">
 		<label for="new-player">Add any carryforward balance(in $):</label>
         <input type="text" id="cf-balance">
@@ -399,10 +569,11 @@ function updatePage(){
             <label for="deposit-date">Date:</label>
             <input type="date" id="deposit-date">
             <button id="record-deposit-btn" onclick="depositAmount()">Record</button>
+			<button class="delete" id="delete-last-deposit" onclick="deleteDeposit()">Delete Last Deposit</button>
         </div>
         <div class="box">
-            <h2>Record Game</h2>
-            <label for="game-cost">Court Cost:</label>
+            <h2>Record Spending</h2>
+            <label for="game-cost">Total Cost:</label>
             <input type="number" id="game-cost">
             <label for="game-date">Date:</label>
             <input type="date" id="game-date">
@@ -411,6 +582,7 @@ function updatePage(){
             </div>
 			<p></P>
             <button id="record-game-btn" onclick="recordGame()">Record</button>
+			<button class="delete" id="delete-last-game" onclick="deleteGame()">Delete Last Spending</button>
         </div>
     </div>
 </div>

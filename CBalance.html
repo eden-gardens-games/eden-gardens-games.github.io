@@ -174,7 +174,8 @@
     function validateParameters() {
         teamRef.get().then(doc => {
             const pin = doc.data()?.pin;
-            if (pin != code) {
+			const pin2 = doc.data()?.apin;
+            if (pin != code && pin2 != code) {
                 alert("Wrong pin. Go back and try again!");
                 blockView();
             } else {
@@ -317,7 +318,7 @@
     </div>
 </div>
 <div id="page2">
-    <h1>Game History</h1>
+    <h1>Spending History</h1>
     <div class="year-select-container">
         <label for="year-select">Year:</label>
         <select id="year-select"></select>
@@ -330,6 +331,7 @@
             <tbody id="table-body"></tbody>
         </table>
     </div>
+	<h2> Click on a name to view individual record</h2>
 </div>
 </body>
 </html>

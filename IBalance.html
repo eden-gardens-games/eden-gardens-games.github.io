@@ -167,6 +167,7 @@
 		const newTeamNameInput = document.getElementById('new-team-name');
 		const newTeamPinInput = document.getElementById('new-team-pin');
 		const teamSelect = document.getElementById('team-select');
+		const newAdminPinInput = document.getElementById('new-admin-pin');
 
 		// Show Create Team Form
 		createTeamBtn.addEventListener('click', () => {
@@ -194,8 +195,8 @@
 		saveTeamBtn.addEventListener('click', () => {
 			const newTeamName = newTeamNameInput.value.trim();
 			const newTeamPin = newTeamPinInput.value.trim();
-
-			if (!newTeamName || !newTeamPin) {
+			const newAdminPin = newAdminPinInput.value.trim();
+			if (!newTeamName || !newTeamPin || !newAdminPin) {
 				alert('Please fill in both the team name and PIN.');
 				return;
 			}
@@ -204,9 +205,16 @@
 				alert('PIN must be a 4-digit number.');
 				return;
 			}
+			
+			if (newAdminPin.length !== 4 || isNaN(newAdminPin)) {
+				alert('Admin PIN must be a 4-digit number.');
+				return;
+			}
+			
 			const teamRef = balRef.doc(newTeamName);
 			teamRef.set({
 				pin : btoa(newTeamPin),
+				apin: btoa(newAdminPin),
 				carryForward : {},
 				currBalance : {},
 				depositAmount : [],
@@ -232,18 +240,14 @@
 			const code = btoa(document.getElementById('team-code').value);
 			balRef.get().then(querySnapshot => {
 				const teams = querySnapshot.docs.map(doc => doc.id);
-				console.log(team)
-				console.log(teams)
 				if(teams.includes(team)){
 					const teamRef = balRef.doc(team);
 					teamRef.get().then(doc => {
-						const pin = doc.data()?.pin;
+						const pin = doc.data()?.apin;
 						if(code == pin){
 							window.location.href = `ABalance.html?team=${team.replace(' ','^%')}&pin=${code}`;
 						}
 						else{
-							console.log(code);
-							console.log(pin);
 							alert("Invalid pin");
 						}
 					})
@@ -263,12 +267,11 @@
 					const teamRef = balRef.doc(team);
 					teamRef.get().then(doc => {
 						const pin = doc.data()?.pin;
-						if(code == pin){
+						const pin2 = doc.data()?.apin;
+						if(code == pin || code == pin2){
 							window.location.href = `CBalance.html?team=${team}&pin=${code}`;
 						}
 						else{
-							console.log(code);
-							console.log(pin);
 							alert("Invalid pin");
 						}
 					})
@@ -282,27 +285,30 @@
 	</script>
 <!-- Page 1: Team Selection -->
 <div id="page1">
-    <h1>Select Your Team</h1>
-    <label for="team-select">Team:</label>
+    <h1>Select Your Group</h1>
+    <label for="team-select">Group:</label>
     <select id="team-select">
         <!-- Add more teams here -->
     </select>
     <br><br>
-    <label for="team-code">Enter Code:</label>
+    <label for="team-code">Enter Pin:</label>
     <input type="password" id="team-code">
     <br><br>
     <button id="admin-view-btn">Admin View</button>
     <button id="common-view-btn">Common View</button>
     <br><br>
-    <button id="create-team-btn">Create New Team</button>
+    <button id="create-team-btn">Create New Group</button>
 
     <!-- Hidden Create Team Form -->
     <div id="create-team-form" style="display: none; margin-top: 20px;">
-        <label for="new-team-name">Team Name:</label>
+        <label for="new-team-name">Group Name:</label>
         <input type="text" id="new-team-name" placeholder="Enter team name">
         <br><br>
         <label for="new-team-pin">4-Digit PIN:</label>
         <input type="password" id="new-team-pin" placeholder="Enter 4-digit PIN" maxlength="4">
+        <br><br>
+        <label for="new-admin-pin">4-Digit Admin PIN:</label>
+        <input type="password" id="new-admin-pin" placeholder="Enter 4-digit Admin PIN" maxlength="4">
         <br><br>
         <button id="save-team-btn">Save Team</button>
         <button id="cancel-team-btn">Cancel</button>

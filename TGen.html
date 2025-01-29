@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Generator</title>
+    <style>
+		body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7faff;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #ffcccb;
+            color: #333;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-button:hover {
+            background: #ff9999;
+        }
+
+        .top-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        input[type="number"] {
+            width: 60px;
+            padding: 8px;
+            font-size: 1rem;
+            text-align: center;
+            border: 2px solid #0056b3;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .gen-button {
+            background: linear-gradient(145deg, #d0efff, #a9d8f3);
+            box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2), -3px -3px 6px #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .gen-button:hover {
+            background: #b3e0ff;
+            color: #004080;
+            transform: scale(1.05);
+        }
+
+        .gen-button:active {
+            background: #a0d0e0;
+            box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.2);
+        }
+		
+        .ticket {
+            display: inline-block;
+            margin: 20px;
+            page-break-inside: avoid;
+        }
+        .ticket table {
+            border-collapse: collapse;
+        }
+        .ticket td {
+            border: 1px solid black;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+        }
+		.ticket p {
+			font-size: 0.7rem;
+			margin: 0;
+			text-align: right;
+		}
+        .sheet {
+            page-break-after: always;
+        }
+        @media print {
+            .sheet {
+                page-break-after: always;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+	<button class="back-button" onclick="location.href='IHousie.html'">← Back</button>
+    <div class="top-container">
+        <input type="number" id="sheets" min="1" value="1">
+        <button class="gen-button" onclick="generateTickets()">Generate Tickets</button>
+    </div>
+    <div id="output"></div>
+    <script>
+        const ticketTemplate = [
+            [0, 1, 2, 3, 4, 5],
+            [0, 1, 2, 6, 7, 8],
+            [3, 4, 5, 6, 7, 8],
+            [0, 3, 6, 1, 4, 7],
+            [0, 4, 8, 2, 5, 7],
+            [1, 3, 8, 2, 5, 6]
+        ];
+        function generateTickets() {
+            const sheets = parseInt(document.getElementById('sheets').value);
+            const output = document.getElementById('output');
+            output.innerHTML = '';
+            for (let s = 0; s < sheets; s++) {
+                const sheetDiv = document.createElement('div');
+                sheetDiv.className = 'sheet';
+                for (let i = 0; i < 2; i++) {
+                    const set = generateSet();
+                    set.forEach(ticket => {
+                        const ticketDiv = document.createElement('div');
+                        ticketDiv.className = 'ticket';
+                        const table = document.createElement('table');
+                        for (let r = 0; r < 3; r++) {
+                            const tr = document.createElement('tr');
+                            for (let c = 0; c < 9; c++) {
+                                const td = document.createElement('td');
+                                td.textContent = ticket.grid[r][c] || '';
+                                tr.appendChild(td);
+                            }
+                            table.appendChild(tr);
+                        }
+                        ticketDiv.appendChild(table);
+						ticketDiv.innerHTML += `<p>@Eden Gardens Hub</p>`;
+                        sheetDiv.appendChild(ticketDiv);
+                    });
+                }
+                output.appendChild(sheetDiv);
+            }
+        }
+        function generateSet() {
+            const set = [];
+            const columnNumbers = {};
+            for (let col = 0; col < 9; col++) {
+                const start = col * 10 + 1;
+                columnNumbers[col] = Array.from({length: 10}, (_, i) => start + i);
+                shuffle(columnNumbers[col]);
+            }
+            for (let t = 0; t < 6; t++) {
+                const template = ticketTemplate[t];
+                const twoCols = new Set(template);
+                const ticket = { grid: [] };
+                const colsData = [];
+                for (let col = 0; col < 9; col++) {
+                    const isTwoCol = twoCols.has(col);
+                    colsData.push({
+                        numbers: columnNumbers[col].splice(0, isTwoCol ? 2 : 1),
+                        isTwoCol
+                    });
+                }
+                const twoColsList = colsData
+                    .map((col, idx) => col.isTwoCol ? idx : -1)
+                    .filter(idx => idx !== -1);
+                shuffle(twoColsList);
+                const groups = [
+                    twoColsList.slice(0, 2),
+                    twoColsList.slice(2, 4),
+                    twoColsList.slice(4, 6)
+                ];
+                const rows = [[], [], []];
+                groups.forEach((group, idx) => {
+                    const [row1, row2] = [[0, 1], [0, 2], [1, 2]][idx];
+                    group.forEach(col => {
+                        rows[row1].push({ col, number: colsData[col].numbers[0] });
+                        rows[row2].push({ col, number: colsData[col].numbers[1] });
+                    });
+                });
+                colsData.forEach((col, idx) => {
+                    if (!col.isTwoCol) {
+                        const row = rows.findIndex(r => r.length < 5);
+                        rows[row].push({ col: idx, number: col.numbers[0] });
+                    }
+                });
+                rows.forEach(row => row.sort((a, b) => a.col - b.col));
+                const grid = [];
+                for (let r = 0; r < 3; r++) {
+                    const gridRow = [];
+                    let current = 0;
+                    for (let c = 0; c < 9; c++) {
+                        gridRow.push(current < rows[r].length && rows[r][current].col === c 
+                            ? rows[r][current++].number 
+                            : 0);
+                    }
+                    grid.push(gridRow);
+                }
+				for (let i = 0; i < 9; i++) {
+					let temp  = [];
+					let temp1 = [];
+					let temp2 = [];
+					if(grid[0][i] != 0){
+						temp1.push(0);
+						temp2.push(grid[0][i]);
+					}
+					if(grid[1][i] != 0){
+						temp1.push(1);
+						temp2.push(grid[1][i]);
+					}
+					if(grid[2][i] != 0){
+						temp1.push(2);
+						temp2.push(grid[2][i]);
+					}
+					temp2.sort((a, b) => a - b);
+					for (let j = 0; j<temp2.length; j++){
+						grid[temp1[j]][i] = temp2[j];
+					}
+				}
+                ticket.grid = grid;
+                set.push(ticket);
+            }
+            return set;
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+    </script>
+</body>
+</html>

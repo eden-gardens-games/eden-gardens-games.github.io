@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Housie Number Generator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff, #dce7ff);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Back Button */
+        #backButton {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 8px 12px;
+            text-decoration: none;
+            background: #ff6666;
+            color: white;
+            font-size: 14px;
+            border-radius: 5px;
+            border: none;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+        }
+
+        #backButton:hover {
+            background: #ff4444;
+        }
+
+        /* Controls */
+        #controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Buttons */
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 10px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Generate Button */
+        button:first-child {
+            background: linear-gradient(145deg, #4CAF50, #2E8B57);
+            color: white;
+        }
+
+        button:first-child:hover {
+            background: #45a049;
+        }
+
+        /* Restart Button */
+        button:last-child {
+            background: linear-gradient(145deg, #ffcc00, #ffa500);
+            color: white;
+        }
+
+        button:last-child:hover {
+            background: #e6b800;
+        }
+
+        /* Last Numbers Display */
+        #lastNumbersContainer {
+            margin: 15px 0;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        #lastNumbers {
+            display: inline-block;
+            padding: 8px 12px;
+            font-weight: bold;
+            border-radius: 5px;
+            background: #ffffff;
+            color: #333;
+            border: 2px solid #0077cc;
+            min-width: 220px;
+        }
+
+        /* Number Grid */
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+			width: 90%
+            box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        td {
+            border: 2px solid #dddddd;
+            padding: 12px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            width: 40px;
+            height: 40px;
+            transition: 0.3s;
+        }
+
+        /* Highlighted Numbers */
+        .highlighted {
+            background: #0077cc;
+            color: white;
+            font-weight: bold;
+            box-shadow: inset 0px 0px 10px rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+		
+		@media screen and (max-width: 600px) {
+        button {
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+
+        td {
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        #backButton {
+            font-size: 12px;
+            padding: 6px 10px;
+        }
+
+        #lastNumbers {
+            font-size: 12px;
+        }
+    }
+
+    </style>
+</head>
+<body>
+    <a href="IHousie.html" id="backButton">← Back</a>
+    
+    <div id="controls">
+        <button onclick="generateNumber()">Generate Next Number</button>
+        <div id="lastNumbersContainer">
+            <span>Last 5 Numbers:</span>
+            <span id="lastNumbers">-</span>
+        </div>
+    </div>
+
+    <table id="numberGrid"></table>
+    
+    <div style="text-align: center; margin-top: 20px;">
+        <button onclick="restartGame()">Restart Game</button>
+    </div>
+
+    <script>
+        let numbers = [];
+        let drawnNumbers = [];
+        let lastFiveNumbers = [];
+
+        function loadState() {
+            const savedState = localStorage.getItem('housieState');
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                numbers = state.numbers;
+                drawnNumbers = state.drawnNumbers;
+                lastFiveNumbers = state.lastFiveNumbers;
+                document.getElementById('lastNumbers').textContent = lastFiveNumbers.join(', ');
+            } else {
+                initializeGame();
+            }
+        }
+
+        function saveState() {
+            const state = {
+                numbers: numbers,
+                drawnNumbers: drawnNumbers,
+                lastFiveNumbers: lastFiveNumbers
+            };
+            localStorage.setItem('housieState', JSON.stringify(state));
+        }
+
+        function initializeGame() {
+            numbers = Array.from({ length: 90 }, (_, i) => i + 1);
+            numbers.sort(() => Math.random() - 0.5);
+            
+            drawnNumbers = [];
+            lastFiveNumbers = [];
+            document.getElementById('lastNumbers').textContent = '-';
+            localStorage.removeItem('housieState');
+
+            const cells = document.querySelectorAll('td');
+            cells.forEach(cell => cell.classList.remove('highlighted'));
+        }
+
+        function generateNumber() {
+            if (numbers.length === 0) return;
+
+            const number = numbers.pop();
+            drawnNumbers.push(number);
+            
+            lastFiveNumbers.unshift(number);
+            if (lastFiveNumbers.length > 5) lastFiveNumbers.pop();
+            document.getElementById('lastNumbers').textContent = lastFiveNumbers.join(', ');
+
+            const row = Math.floor((number - 1) / 10);
+            const col = (number - 1) % 10;
+            const cell = document.querySelector(`tr:nth-child(${row + 1}) td:nth-child(${col + 1})`);
+            if (cell) cell.classList.add('highlighted');
+            
+            saveState();
+        }
+
+        function restartGame() {
+            initializeGame();
+            createGrid();
+            saveState();
+        }
+
+        function createGrid() {
+            const table = document.getElementById('numberGrid');
+            table.innerHTML = '';
+            
+            for (let row = 0; row < 9; row++) {
+                const tr = document.createElement('tr');
+                for (let col = 0; col < 10; col++) {
+                    const td = document.createElement('td');
+                    const number = row * 10 + col + 1;
+                    td.textContent = number;
+                    
+                    if (drawnNumbers.includes(number)) {
+                        td.classList.add('highlighted');
+                    }
+                    
+                    tr.appendChild(td);
+                }
+                table.appendChild(tr);
+            }
+        }
+
+        window.onload = () => {
+            loadState();
+            createGrid();
+        };
+    </script>
+</body>
+</html>

@@ -41,12 +41,32 @@
             100% { transform: translateX(-100%); }
         }
 
-        .button-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            max-width: 800px;
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            max-width: 900px;
             margin: 30px auto;
+        }
+
+        .section {
+            flex: 1;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            color: #004080;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
         .hub-button {
@@ -54,11 +74,12 @@
             box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2), -4px -4px 8px #ffffff;
             border: none;
             border-radius: 12px;
-            padding: 20px;
+            padding: 15px;
             font-size: 1.5rem;
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s ease;
+            width: 100%;
         }
 
         .hub-button:hover {
@@ -86,13 +107,27 @@
         <span>Welcome to Eden Gardens Hub! &emsp;&emsp;&emsp;&emsp;&emsp; New games coming soon! &emsp;&emsp;&emsp;&emsp;&emsp; Stay tuned for exciting updates! &emsp;&emsp;&emsp;&emsp;&emsp; Superbowl on 9th Feb! Any plans?</span>
     </div>
 
-    <div class="button-container">
-        <button class="hub-button" onclick="location.href='IBalance.html'">Bill Split</button>
-        <button class="hub-button" onclick="location.href='IMafia.html'">Mafia</button>
-        <button class="hub-button" onclick="location.href='ICodenames.html'">Codenames</button>
-        <button class="hub-button" onclick="location.href='ISpyfall.html'">Spyfall</button>
-        <button class="hub-button" onclick="showComingSoonAlert()">Coming Soon</button>
-        <button class="hub-button" onclick="showComingSoonAlert()">Coming Soon</button>
+    <div class="container">
+        <!-- Party Games Section -->
+        <div class="section">
+            <h2>Party Games</h2>
+            <div class="button-container">
+                <button class="hub-button" onclick="location.href='IMafia.html'">Mafia</button>
+                <button class="hub-button" onclick="location.href='IHousie.html'">Housie</button>
+                <button class="hub-button" onclick="location.href='ISpyfall.html'">Spyfall</button>
+            </div>
+        </div>
+
+        <!-- Utility Section -->
+        <div class="section">
+            <h2>Utility</h2>
+            <div class="button-container">
+                <button class="hub-button" onclick="location.href='IBalance.html'">Bill Split</button>
+                <button class="hub-button" onclick="showComingSoonAlert()">Coming Soon</button>
+                <button class="hub-button" onclick="showComingSoonAlert()">Coming Soon</button>
+            </div>
+        </div>
     </div>
+
 </body>
 </html>
