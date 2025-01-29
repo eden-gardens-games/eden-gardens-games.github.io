@@ -525,7 +525,7 @@ function updatePage(){
 		const ps = doc.data().playerList;
 		ps.forEach(player => {
 			const option = document.createElement('option');
-			option.value = player.toLowerCase().replace(/\s+/g, '-'); // Converts to a usable value
+			option.value = player; // Converts to a usable value
 			option.textContent = player;
 			playerSelect.appendChild(option);
 		});
