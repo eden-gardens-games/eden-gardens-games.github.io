@@ -30,13 +30,16 @@
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f9f9fb;
+			background: url('images/bal-bg2.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            background-blend-mode: overlay;
             margin: 0;
             padding: 0;
         }
 
         h1 {
             text-align: center;
-            color: #4CAF50;
+            color: #19731D;
             margin-top: 20px;
         }
 
@@ -75,7 +78,6 @@
         .table-container {
             position: relative;
             width: 90%;
-            max-height: 500px;
             margin: auto;
             overflow: auto;
             border: 2px solid #4CAF50;
@@ -118,7 +120,6 @@
 		th:first-child {
 			position: sticky;
 			left: 0;
-			top: unset;
 			z-index: 3; /* Higher than td:first-child */
 			background: #4CAF50; /* Match the table header background */
 			color: white;
@@ -142,10 +143,6 @@
             background: #f1f1f1;
         }
 
-        /* Dynamic table height handling */
-        .table-container table {
-            max-height: 450px; /* For 10 rows max */
-        }
     </style>
 </head>
 <body>
