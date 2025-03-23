@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy 50th Birthday!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap'); /* Additional font for birthday greeting */
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background: black;
+            color: white;
+            text-align: center;
+            font-family: 'Pacifico', cursive;
+            overflow-y: auto;
+        }
+        h1 {
+            font-size: 3em;
+            margin-top: 50px;
+            animation: fadeIn 2s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .firework {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: url('images/firework.gif') no-repeat center center;
+            background-size: cover;
+            opacity: 0.7;
+            animation: explode 3s ease-out infinite;
+        }
+        @keyframes explode {
+            from { transform: scale(0.5); opacity: 0.7; }
+            to { transform: scale(2); opacity: 0; }
+        }
+        .slideshow {
+            position: absolute;
+            width: 60%;
+            max-width: 600px;
+            margin: 20px auto;
+            left: 27%;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 0 15px white;
+        }
+        .slideshow img {
+            width: 100%;
+            display: none;
+            animation: fade 2s ease-in-out;
+        }
+        @keyframes fade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .balloon {
+            position: absolute;
+            width: 50px;
+            height: 70px;
+            background: url('images/balloon.png') no-repeat center center;
+            background-size: cover;
+            animation: floatUp 5s linear infinite;
+        }
+        @keyframes floatUp {
+            from { transform: translateY(100vh); opacity: 1; }
+            to { transform: translateY(-10vh); opacity: 0; }
+        }
+        .cake {
+            width: 300px;
+            height: auto;
+            margin: 30px auto;
+        }
+        .btn-container {
+            position: fixed;
+            bottom: 30px;
+            left: 85%;
+            transform: translateX(-50%);
+        }
+        .btn-container button {
+            background-color: #ff3366;
+            color: white;
+            font-size: 1.5em;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Pacifico', cursive;
+        }
+        .hidden {
+            display: none;
+        }
+        .birthday-greeting {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2em;
+            color: #ffcc00;
+            margin-top: 50px;
+        }
+        .back-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Happy 50th Birthday, Mama!</h1>
+    <img src="images/cake.gif" alt="Birthday Cake" class="cake">
+    <div class="slideshow">
+        <img src="images/photo1.jpeg" alt="Memory 1">
+        <img src="images/photo2.jpeg" alt="Memory 2">
+        <img src="images/photo3.jpeg" alt="Memory 3">
+        <img src="images/photo4.jpeg" alt="Memory 4">
+        <img src="images/photo5.jpeg" alt="Memory 5">
+        <img src="images/photo6.jpeg" alt="Memory 6">
+        <img src="images/photo7.jpeg" alt="Memory 7">
+        <img src="images/photo8.jpeg" alt="Memory 8">
+        <img src="images/photo9.jpeg" alt="Memory 9">
+        <img src="images/photo42.png" alt="Memory 42">
+        <img src="images/photo10.jpeg" alt="Memory 10">
+        <img src="images/photo11.jpg" alt="Memory 11">
+        <img src="images/photo12.jpg" alt="Memory 12">
+        <img src="images/photo13.jpg" alt="Memory 13">
+        <img src="images/photo14.jpg" alt="Memory 14">
+        <img src="images/photo15.gif" alt="Memory 15">
+        <img src="images/photo16.jpg" alt="Memory 16">
+        <img src="images/photo17.jpg" alt="Memory 17">
+        <img src="images/photo18.jpg" alt="Memory 18">
+        <img src="images/photo19.jpg" alt="Memory 19">
+        <img src="images/photo20.jpg" alt="Memory 20">
+        <img src="images/photo21.jpg" alt="Memory 21">
+        <img src="images/photo22.jpg" alt="Memory 22">
+        <img src="images/photo23.jpg" alt="Memory 23">
+        <img src="images/photo24.jpeg" alt="Memory 24">
+        <img src="images/photo25.jpeg" alt="Memory 25">
+        <img src="images/photo26.jpeg" alt="Memory 26">
+        <img src="images/photo27.jpeg" alt="Memory 27">
+        <img src="images/photo28.jpeg" alt="Memory 28">
+        <img src="images/photo29.jpeg" alt="Memory 29">
+        <img src="images/photo30.jpeg" alt="Memory 30">
+        <img src="images/photo31.jpeg" alt="Memory 31">
+        <img src="images/photo32.jpeg" alt="Memory 32">
+        <img src="images/photo33.jpeg" alt="Memory 33">
+        <img src="images/photo34.jpeg" alt="Memory 34">
+        <img src="images/photo35.jpeg" alt="Memory 35">
+        <img src="images/photo36.jpeg" alt="Memory 36">
+        <img src="images/photo37.jpeg" alt="Memory 37">
+        <img src="images/photo38.jpeg" alt="Memory 38">
+        <img src="images/photo39.jpeg" alt="Memory 39">
+        <img src="images/photo40.jpeg" alt="Memory 40">
+        <img src="images/photo41.jpeg" alt="Memory 41">
+        <img src="images/photo43.jpeg" alt="Memory 43">
+        <img src="images/photo44.jpeg" alt="Memory 44">
+        <img src="images/photo45.jpeg" alt="Memory 45">
+        <img src="images/photo46.jpeg" alt="Memory 46">
+        <img src="images/photo47.jpeg" alt="Memory 47">
+        <img src="images/photo48.jpeg" alt="Memory 48">
+        <img src="images/photo49.jpeg" alt="Memory 49">
+        <img src="images/photo50.jpeg" alt="Memory 50">
+    </div>
+    <div class="btn-container">
+        <button id="clickMeBtn">Click Me!</button>
+    </div>
+
+    <script>
+        function createFirework() {
+            const firework = document.createElement("div");
+            firework.className = "firework";
+            document.body.appendChild(firework);
+            firework.style.left = Math.random() * (window.innerWidth - 100) + "px"; // Adjust to avoid overlap
+            firework.style.top = Math.random() * (window.innerHeight - 100) + "px"; // Adjust to avoid overlap
+            setTimeout(() => firework.remove(), 3000); // Adjust duration for slower animation
+        }
+        setInterval(createFirework, 800); // Increase number of fireworks
+
+        function createBalloon() {
+            const balloon = document.createElement("div");
+            balloon.className = "balloon";
+            balloon.style.left = Math.random() * (window.innerWidth - 50) + "px"; // Adjust to avoid overlap
+            document.body.appendChild(balloon);
+            setTimeout(() => balloon.remove(), 5000); // Increase balloon life duration
+        }
+        setInterval(createBalloon, 500); // Increase number of balloons
+
+        let index = 0
+		let slides = Array.from(document.querySelectorAll(".slideshow img")); // Convert NodeList to array
+
+		// Fisher-Yates Shuffle
+		function shuffle(array) {
+			for (let i = array.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[array[i], array[j]] = [array[j], array[i]];
+			}
+		}
+
+		// Shuffle slides array
+		shuffle(slides);
+
+		// Update the DOM order
+		let slideshowContainer = document.querySelector(".slideshow");
+		slides.forEach(img => slideshowContainer.appendChild(img));
+
+		function showSlides() {
+			slides.forEach(img => img.style.display = "none");
+			slides[index].style.display = "block";
+			index = (index + 1) % slides.length;
+		}
+
+		showSlides();
+		setInterval(showSlides, 3000);
+
+        // Handle "Click Me!" button click
+        document.getElementById('clickMeBtn').addEventListener('click', function() {
+            // Hide all content except the title
+            document.querySelector('h1').style.display = 'block';
+            document.querySelector('.btn-container').style.display = 'none';
+            document.querySelector('.slideshow').classList.add('hidden');
+            document.querySelector('.cake').classList.add('hidden');
+            document.querySelectorAll('.firework').forEach(fw => fw.remove());
+            document.querySelectorAll('.balloon').forEach(balloon => balloon.remove());
+
+            // Show new greeting and back button
+            const greetingDiv = document.createElement('div');
+            greetingDiv.innerHTML = `
+                <div class="birthday-greeting">50 years! That's a pretty long time! 50 years of work, 50 years of play, 50 years of duty, 50 years of freedom... there's no denying that you have accomplished a lot. A LOT! A well settled family, a good house, car, 401(k) portfolio.. All that aside, you earned respect and admiration of a lot of people. People you work with, you live with, you interacted with.. everyone looks to you when they need answer, when they need a direction, a plan, when they need a voice of reason - in short, when they need a leader. Be it for simple stuff like games or for financial advice or house/car selection or for more complicated projects like a company. You have achieved a lot that you can take pride in. All in just 50 years. There is still a lot more left and I'm sure you will achieve a lot more. Keep moving forward, inspiring me and the next generation. I wish you a very happy birthday and very prosperous decades ahead!  </div>
+                <button class="back-btn" onclick="window.location.reload()">Back</button>
+            `;
+            document.body.appendChild(greetingDiv);
+        });
+    </script>
+</body>
+</html>

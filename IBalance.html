@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="apple-touch-icon" sizes="180x180" href="images/icons/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png">
+	<link rel="manifest" href="images/icons/site.webmanifest">
     <title>Sports Team Balance Management</title>
     <style>
 	/* General Styles */
@@ -70,6 +74,28 @@
 		button:hover {
 			background-color: #0056b3;
 		}
+		
+		.back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #ffcccb;
+            color: #333;
+            font-size: 1rem;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-button:hover {
+            background: #ff9999;
+        }
 
 		#create-team-btn {
 			margin-top: 20px;
@@ -286,6 +312,7 @@
 		});
 	</script>
 <!-- Page 1: Team Selection -->
+<button class="back-button" onclick="location.href='index.html'">← Back to the Hub</button>
 <div class="container" id="page1">
     <h1>Select Your Group</h1>
     <label for="team-select">Group:</label>

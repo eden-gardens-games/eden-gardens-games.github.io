@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="apple-touch-icon" sizes="180x180" href="images/icons/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png">
+	<link rel="manifest" href="images/icons/site.webmanifest">
     <title>Sports Team Balance Management</title>
 	<style>
 		#block-view {
@@ -27,6 +31,28 @@
 		.block-message p {
 			font-size: 1.2em;
 		}
+		
+		.back-button {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #ffcccb;
+            color: #333;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-button:hover {
+            background: #ff9999;
+        }
 		
 		.modal-overlay {
             position: fixed;
@@ -159,6 +185,7 @@
 			padding: 20px;
 			max-width: 90%;
 			margin: 0 auto;
+			flex-direction: column;
 		}
 
 		.box {
@@ -538,6 +565,7 @@ function updatePage(){
 
 
 </script>
+<button class="back-button" onclick="location.href='IBalance.html'">← Back</button>
 <div class="modal-overlay" id="confirmationModal">
 	<div class="modal-box" id="modal-box">
 		<h2>Are you sure you want to delete?</h2>
