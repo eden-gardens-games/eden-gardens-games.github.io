@@ -1,0 +1,1968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Happy Easter!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            overflow: hidden;
+            touch-action: none;
+            user-select: none;
+        }
+
+        /* Park Background Layers */
+        .park-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                #87CEEB 0%, 
+                #6BB3D9 30%,
+                #90EE90 55%, 
+                #7CCD7C 70%,
+                #228B22 100%);
+            z-index: -10;
+        }
+
+        /* Sun with rays */
+        .sun {
+            position: fixed;
+            top: 40px;
+            right: 60px;
+            width: 90px;
+            height: 90px;
+            z-index: -8;
+        }
+
+        .sun-core {
+            width: 90px;
+            height: 90px;
+            background: radial-gradient(circle, #FFE87C 0%, #FFD700 50%, #FFA500 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 60px #FFD700, 0 0 100px #FFA500, 0 0 150px rgba(255,165,0,0.5);
+            animation: sun-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes sun-pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 60px #FFD700, 0 0 100px #FFA500; }
+            50% { transform: scale(1.05); box-shadow: 0 0 80px #FFD700, 0 0 120px #FFA500; }
+        }
+
+        .sun-rays {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            width: 130px;
+            height: 130px;
+            animation: sun-rays-spin 60s linear infinite;
+        }
+
+        @keyframes sun-rays-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Improved Clouds */
+        .clouds-container {
+            position: fixed;
+            width: 100%;
+            height: 45%;
+            top: 0;
+            z-index: -7;
+            pointer-events: none;
+        }
+
+        .cloud {
+            position: absolute;
+            opacity: 0.95;
+            animation: float-cloud linear infinite;
+        }
+
+        .cloud-body {
+            position: relative;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+        }
+
+        @keyframes float-cloud {
+            from { transform: translateX(-300px); }
+            to { transform: translateX(calc(100vw + 300px)); }
+        }
+
+        /* Grass Layers */
+        .grass-layer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .grass-back {
+            height: 120px;
+            background: linear-gradient(180deg, transparent 0%, #2D8B2D 100%);
+        }
+
+        .grass-front {
+            height: 80px;
+            background: linear-gradient(180deg, transparent 0%, #228B22 100%);
+        }
+
+        .grass-blades {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+        }
+
+        /* Park Elements with Layers */
+        .park-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .park-element {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        /* Large Tree */
+        .large-tree {
+            z-index: 0;
+        }
+
+        .large-tree.back {
+            z-index: -1;
+            opacity: 0.8;
+        }
+
+        .tree-shadow {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 30px;
+            background: radial-gradient(ellipse, rgba(0,0,0,0.3) 0%, transparent 70%);
+        }
+
+        /* Park Bench */
+        .park-bench {
+            z-index: 50;
+        }
+
+        /* Bushes */
+        .bush {
+            z-index: 30;
+        }
+
+        .bush.back {
+            z-index: -1;
+        }
+
+        /* Flowers improved */
+        .flower-patch {
+            position: absolute;
+            z-index: 25;
+        }
+
+        /* Pond */
+        .pond {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5DADE2 0%, #3498DB 50%, #2874A6 100%);
+            box-shadow: inset 0 5px 20px rgba(255,255,255,0.3), 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        .pond-reflection {
+            position: absolute;
+            width: 60%;
+            height: 30%;
+            top: 20%;
+            left: 20%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, transparent 100%);
+            border-radius: 50%;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 15px;
+            z-index: 100;
+            background: linear-gradient(180deg, rgba(255,182,193,0.85) 0%, transparent 100%);
+        }
+
+        .header h1 {
+            font-size: clamp(24px, 6vw, 48px);
+            color: #FF1493;
+            text-shadow: 2px 2px 0 white, 4px 4px 8px rgba(0,0,0,0.2), 0 0 30px rgba(255,255,255,0.8);
+            letter-spacing: 3px;
+            font-weight: bold;
+        }
+
+        /* Reset Button */
+        .reset-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+            border: 3px solid white;
+            border-radius: 30px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 200;
+            box-shadow: 0 4px 15px rgba(255,107,107,0.5), inset 0 2px 10px rgba(255,255,255,0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: inherit;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .reset-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 25px rgba(255,107,107,0.7), inset 0 2px 10px rgba(255,255,255,0.3);
+        }
+
+        .reset-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Bunny Controls */
+        .bunny-controls {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,240,245,0.98) 100%);
+            padding: 18px;
+            border-radius: 20px;
+            z-index: 200;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15), inset 0 2px 10px rgba(255,255,255,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            border: 2px solid #FFB6C1;
+        }
+
+        .bunny-controls label {
+            font-size: 15px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .bunny-controls input {
+            width: 70px;
+            padding: 8px;
+            text-align: center;
+            border: 3px solid #FFB6C1;
+            border-radius: 15px;
+            font-size: 18px;
+            font-family: inherit;
+            font-weight: bold;
+            color: #FF1493;
+            background: white;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .bunny-controls input:focus {
+            outline: none;
+            border-color: #FF1493;
+            box-shadow: 0 0 10px rgba(255,20,147,0.3);
+        }
+
+        .bunny-counter-display {
+            font-size: 16px;
+            color: #FF1493;
+            font-weight: bold;
+            background: linear-gradient(135deg, #FFE4E1 0%, #FFC0CB 100%);
+            padding: 5px 15px;
+            border-radius: 15px;
+        }
+
+        /* Game Area */
+        .game-area {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        /* Layer containers */
+        .layer-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .layer-mid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 50;
+        }
+
+        .layer-front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+        }
+
+        /* Eggs */
+        .egg {
+            position: absolute;
+            width: 55px;
+            height: 70px;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: filter 0.1s;
+        }
+
+        .egg:hover {
+            filter: brightness(1.2) drop-shadow(0 0 10px rgba(255,255,255,0.8));
+            transform: scale(1.15);
+        }
+
+        .egg svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(3px 5px 8px rgba(0,0,0,0.3));
+        }
+
+        .egg.common svg {
+            filter: drop-shadow(3px 5px 8px rgba(0,0,0,0.3));
+        }
+
+        .egg.rare svg {
+            filter: drop-shadow(0 0 12px rgba(138, 43, 226, 0.9)) 
+                    drop-shadow(0 0 25px rgba(138, 43, 226, 0.6))
+                    drop-shadow(3px 5px 8px rgba(0,0,0,0.3));
+            animation: egg-glow-purple 1.5s ease-in-out infinite;
+        }
+
+        @keyframes egg-glow-purple {
+            0%, 100% { filter: drop-shadow(0 0 12px rgba(138, 43, 226, 0.9)) drop-shadow(3px 5px 8px rgba(0,0,0,0.3)); }
+            50% { filter: drop-shadow(0 0 20px rgba(138, 43, 226, 1)) drop-shadow(0 0 35px rgba(138, 43, 226, 0.8)) drop-shadow(3px 5px 8px rgba(0,0,0,0.3)); }
+        }
+
+        .egg.legendary {
+            animation: egg-legendary 2s ease-in-out infinite;
+        }
+
+        @keyframes egg-legendary {
+            0%, 100% { 
+                filter: drop-shadow(0 0 15px rgba(255, 215, 0, 1)) 
+                        drop-shadow(0 0 30px rgba(255, 215, 0, 0.9))
+                        drop-shadow(3px 5px 8px rgba(0,0,0,0.3));
+                transform: scale(1);
+            }
+            50% { 
+                filter: drop-shadow(0 0 25px rgba(255, 215, 0, 1)) 
+                        drop-shadow(0 0 50px rgba(255, 215, 0, 1))
+                        drop-shadow(3px 5px 8px rgba(0,0,0,0.3));
+                transform: scale(1.05);
+            }
+        }
+
+        /* Sparkles */
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            font-size: 24px;
+            animation: sparkle-pop 0.7s ease-out forwards;
+        }
+
+        @keyframes sparkle-pop {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.3) rotate(180deg); opacity: 1; }
+            100% { transform: scale(0.5) rotate(360deg); opacity: 0; }
+        }
+
+        /* Bunnies - Enhanced */
+        .bunny {
+            position: absolute;
+            width: 80px;
+            height: 100px;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: filter 0.2s;
+        }
+
+        .bunny:hover {
+            filter: brightness(1.1);
+        }
+
+        .bunny.happy {
+            animation: bunny-happy 0.4s ease-in-out 2;
+        }
+
+        @keyframes bunny-happy {
+            0%, 100% { transform: scale(1.1) rotate(0deg); }
+            25% { transform: scale(1.15) rotate(-8deg); }
+            75% { transform: scale(1.15) rotate(8deg); }
+        }
+
+        .bunny.eating {
+            animation: bunny-eat 0.3s ease-in-out 3;
+        }
+
+        @keyframes bunny-eat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05) translateY(-5px); }
+        }
+
+        .bunny.hopping {
+            animation: bunny-hop 0.4s ease-out;
+        }
+
+        @keyframes bunny-hop {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .bunny.wiggling {
+            animation: bunny-wiggle 0.5s ease-in-out;
+        }
+
+        @keyframes bunny-wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        .bunny.dancing {
+            animation: bunny-dance 1s ease-in-out;
+        }
+
+        @keyframes bunny-dance {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(-5deg); }
+            50% { transform: translateY(0) rotate(0deg); }
+            75% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        .bunny.spin {
+            animation: bunny-spin 0.6s ease-in-out;
+        }
+
+        @keyframes bunny-spin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        /* Bunny SVG styles */
+        .bunny-body {
+            fill: url(#bunnyFur);
+            stroke: #D3D3D3;
+            stroke-width: 0.5;
+        }
+
+        .bunny-ear-outer {
+            fill: url(#bunnyFur);
+            stroke: #D3D3D3;
+            stroke-width: 0.5;
+        }
+
+        .bunny-ear-inner {
+            fill: #FFB6C1;
+        }
+
+        .bunny-cheek {
+            fill: #FFB6C1;
+            opacity: 0.6;
+        }
+
+        .bunny-eye {
+            fill: #2C1810;
+        }
+
+        .bunny-eye-shine {
+            fill: white;
+        }
+
+        .bunny-nose {
+            fill: #FF69B4;
+        }
+
+        .bunny-mouth {
+            fill: none;
+            stroke: #2C1810;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+        }
+
+        .bunny-tail {
+            fill: white;
+            stroke: #E8E8E8;
+            stroke-width: 0.5;
+        }
+
+        .bunny-foot {
+            fill: url(#bunnyFur);
+            stroke: #D3D3D3;
+            stroke-width: 0.5;
+        }
+
+        .bunny-whisker {
+            fill: none;
+            stroke: #888;
+            stroke-width: 0.8;
+        }
+
+        /* Bunny emotion states */
+        .bunny[data-emotion="happy"] .bunny-mouth {
+            d: path("M 30 55 Q 40 65 50 55");
+        }
+
+        .bunny[data-emotion="eating"] .bunny-mouth {
+            d: path("M 35 55 Q 40 60 45 55 Q 40 58 35 55");
+        }
+
+        /* Basket */
+        .basket-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 150;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .basket {
+            width: 140px;
+            height: 95px;
+            position: relative;
+            pointer-events: auto;
+        }
+
+        .basket-handle {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90px;
+            height: 45px;
+            border: 6px solid #8B4513;
+            border-bottom: none;
+            border-radius: 50px 50px 0 0;
+            background: transparent;
+            box-shadow: inset 0 8px 15px rgba(139,69,19,0.3);
+        }
+
+        .basket-body {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 65px;
+            background: linear-gradient(135deg, #DEB887 0%, #D2B48C 30%, #C4A76C 70%, #B8956C 100%);
+            border-radius: 15px 15px 40px 40px;
+            overflow: hidden;
+            border: 4px solid #8B4513;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .basket-weave {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 10px,
+                rgba(139,69,19,0.3) 10px,
+                rgba(139,69,19,0.3) 12px
+            );
+        }
+
+        .basket-fill {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            right: 5px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 3px;
+            transition: height 0.5s ease-out;
+        }
+
+        .mini-egg {
+            width: 18px;
+            height: 24px;
+            border-radius: 50%;
+            animation: mini-egg-appear 0.4s ease-out;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        @keyframes mini-egg-appear {
+            0% { transform: scale(0) rotate(-180deg); }
+            60% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,240,245,0.98) 100%);
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #FF1493;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2), inset 0 2px 10px rgba(255,255,255,0.5);
+            border: 2px solid #FFB6C1;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+
+        .score-details {
+            font-size: 13px;
+            color: #666;
+            margin-top: 6px;
+            text-align: center;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .score-details span {
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(255,20,147,0.1);
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 600px) {
+            .bunny-controls {
+                padding: 12px;
+                font-size: 12px;
+            }
+
+            .bunny-controls input {
+                width: 55px;
+                font-size: 16px;
+            }
+
+            .basket-container {
+                bottom: 10px;
+                left: 10px;
+            }
+
+            .basket {
+                width: 110px;
+                height: 75px;
+            }
+
+            .basket-body {
+                width: 100px;
+                height: 55px;
+            }
+
+            .basket-handle {
+                width: 75px;
+                height: 38px;
+            }
+
+            .score-display {
+                font-size: 16px;
+                padding: 10px 18px;
+            }
+
+            .reset-btn {
+                padding: 10px 18px;
+                font-size: 14px;
+            }
+
+            .header h1 {
+                font-size: clamp(18px, 5vw, 32px);
+            }
+        }
+
+        /* Instructions */
+        .instructions {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,240,245,0.98) 100%);
+            padding: 18px;
+            border-radius: 18px;
+            z-index: 150;
+            max-width: 220px;
+            font-size: 13px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border: 2px solid #FFB6C1;
+        }
+
+        .instructions h3 {
+            color: #FF1493;
+            margin-bottom: 10px;
+            font-size: 15px;
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.8);
+        }
+
+        .instructions ul {
+            padding-left: 18px;
+            color: #444;
+            line-height: 1.6;
+        }
+
+        .instructions li {
+            margin: 6px 0;
+        }
+
+        .instructions .rarity {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #FFB6C1;
+        }
+
+        .instructions .rarity-item {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .instructions {
+                display: none;
+            }
+        }
+
+        /* Layer indicators for debugging (remove in production) */
+        .layer-indicator {
+            position: absolute;
+            background: rgba(255,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Park Background -->
+    <div class="park-background"></div>
+    
+    <!-- Sun -->
+    <div class="sun">
+        <div class="sun-rays">
+            <svg viewBox="0 0 130 130">
+                <defs>
+                    <linearGradient id="rayGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#FFE87C;stop-opacity:0.8"/>
+                        <stop offset="100%" style="stop-color:#FFD700;stop-opacity:0"/>
+                    </linearGradient>
+                </defs>
+                <g transform="translate(65,65)">
+                    <g>
+                        <line x1="0" y1="-65" x2="0" y2="-85" stroke="url(#rayGrad)" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="46" y1="-46" x2="60" y2="-60" stroke="url(#rayGrad)" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="65" y1="0" x2="85" y2="0" stroke="url(#rayGrad)" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="46" y1="46" x2="60" y2="60" stroke="url(#rayGrad)" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="0" y1="65" x2="0" y2="85" stroke="url(#rayGrad)" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="-46" y1="46" x2="-60" y2="60" stroke="url(#rayGrad)" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="-65" y1="0" x2="-85" y2="0" stroke="url(#rayGrad)" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="-46" y1="-46" x2="-60" y2="-60" stroke="url(#rayGrad)" stroke-width="4" stroke-linecap="round"/>
+                    </g>
+                </g>
+            </svg>
+        </div>
+        <div class="sun-core"></div>
+    </div>
+
+    <!-- Clouds Container -->
+    <div class="clouds-container" id="cloudsContainer"></div>
+
+    <!-- Park Elements (decorations) -->
+    <div class="park-elements" id="parkElements"></div>
+
+    <!-- Grass -->
+    <div class="grass-layer grass-back"></div>
+    <div class="grass-layer grass-front">
+        <svg class="grass-blades" id="grassBlades"></svg>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>🐰 Happy Easter! 🥚</h1>
+    </div>
+
+    <!-- Reset Button -->
+    <button class="reset-btn" onclick="resetGame()">🔄 Reset</button>
+
+    <!-- Bunny Controls -->
+    <div class="bunny-controls">
+        <label>🐰 Bunnies:</label>
+        <input type="number" id="bunnyCount" min="1" max="6" value="2" onchange="updateBunnyCount(this.value)">
+        <div class="bunny-counter-display" id="bunnyCounterDisplay">Active: 2</div>
+    </div>
+
+    <!-- Game Area with Layers -->
+    <div class="game-area">
+        <div class="layer-back" id="layerBack"></div>
+        <div class="layer-mid" id="layerMid"></div>
+        <div class="layer-front" id="layerFront"></div>
+    </div>
+
+    <!-- Basket -->
+    <div class="basket-container">
+        <div class="score-display">
+            <div>🥚 Score: <span id="score">0</span></div>
+            <div class="score-details">
+                <span style="background:rgba(100,149,237,0.2)" id="commonCount">0</span>
+                <span style="background:rgba(138,43,226,0.2)" id="rareCount">0</span>
+                <span style="background:rgba(255,215,0,0.3)" id="legendaryCount">0</span>
+            </div>
+        </div>
+        <div class="basket">
+            <div class="basket-handle"></div>
+            <div class="basket-body">
+                <div class="basket-weave"></div>
+                <div class="basket-fill" id="basketFill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions">
+        <h3>🎮 How to Play:</h3>
+        <ul>
+            <li>Click/tap eggs to collect!</li>
+            <li>Bunnies compete for eggs</li>
+            <li>Pet bunnies for bonuses!</li>
+            <li>Eggs bounce on grass!</li>
+        </ul>
+        <div class="rarity">
+            <div class="rarity-item">🥚 Common</div>
+            <div class="rarity-item" style="color:purple">⭐ Rare</div>
+            <div class="rarity-item" style="color:gold">👑 Legendary</div>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let gameState = {
+            score: 0,
+            commonCount: 0,
+            rareCount: 0,
+            legendaryCount: 0,
+            bunnyCount: 2
+        };
+
+        // Physics constants
+        const GRAVITY = 0.3;
+        const BOUNCE_FACTOR = 0.7;
+        const FRICTION = 0.98;
+        const GROUND_LEVEL = 50; // Percentage from bottom
+
+        // Game objects
+        let eggs = [];
+        let bunnies = [];
+
+        // Audio
+        let audioContext;
+
+        // Layer depths
+        const layers = {
+            back: { z: 1, eggsBehind: true },
+            mid: { z: 50, eggsBehind: false },
+            front: { z: 100, eggsBehind: true }
+        };
+
+        // Load/Save
+        function loadGameState() {
+            const saved = localStorage.getItem('easterGamePro');
+            if (saved) {
+                gameState = JSON.parse(saved);
+                document.getElementById('bunnyCount').value = gameState.bunnyCount;
+                updateBunnyCounterDisplay();
+            }
+            updateScoreDisplay();
+            updateBasketFill();
+        }
+
+        function saveGameState() {
+            localStorage.setItem('easterGamePro', JSON.stringify(gameState));
+        }
+
+        function resetGame() {
+            if (confirm('Reset all progress?')) {
+                gameState = {
+                    score: 0,
+                    commonCount: 0,
+                    rareCount: 0,
+                    legendaryCount: 0,
+                    bunnyCount: 2
+                };
+                document.getElementById('bunnyCount').value = 2;
+                saveGameState();
+                updateScoreDisplay();
+                updateBasketFill();
+                updateBunnyCounterDisplay();
+                initBunnies();
+                playSound('reset');
+            }
+        }
+
+        // Audio
+        function initAudio() {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        function playSound(type) {
+            if (!audioContext) initAudio();
+            if (audioContext.state === 'suspended') audioContext.resume();
+
+            const now = audioContext.currentTime;
+
+            switch(type) {
+                case 'collect':
+                    playNote([523, 659, 784], [0, 0.08, 0.16], 0.2, 'sine', 0.25);
+                    break;
+                case 'rare':
+                    playNote([523, 659, 784, 1047], [0, 0.1, 0.2, 0.3], 0.25, 'sine', 0.3);
+                    break;
+                case 'legendary':
+                    playNote([523, 659, 784, 1047, 1319], [0, 0.08, 0.16, 0.24, 0.32], 0.3, 'sine', 0.35);
+                    playNote([784, 988, 1175], [0.1, 0.18, 0.26], 0.3, 'triangle', 0.2);
+                    break;
+                case 'missed':
+                    playNote([200, 150], [0, 0.15], 0.25, 'triangle', 0.2);
+                    break;
+                case 'pet':
+                    playNote([600, 800, 1000], [0, 0.06, 0.12], 0.15, 'sine', 0.2);
+                    break;
+                case 'bunnyAction':
+                    playNote([400 + Math.random() * 200], [0], 0.15, 'sine', 0.12);
+                    break;
+                case 'reset':
+                    playNote([300, 400, 500], [0, 0.1, 0.2], 0.2, 'sine', 0.2);
+                    break;
+            }
+        }
+
+        function playNote(freqs, times, duration, type, volume) {
+            freqs.forEach((freq, i) => {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.frequency.setValueAtTime(freq, audioContext.currentTime + times[i]);
+                osc.type = type;
+                gain.gain.setValueAtTime(volume, audioContext.currentTime + times[i]);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + times[i] + duration);
+                osc.start(audioContext.currentTime + times[i]);
+                osc.stop(audioContext.currentTime + times[i] + duration);
+            });
+        }
+
+        // Egg colors
+        const eggColors = {
+            common: [
+                { primary: '#FF6B6B', secondary: '#FF8E8E', pattern: '#FFB6B6', highlight: '#FFA5A5' },
+                { primary: '#4ECDC4', secondary: '#45B7AA', pattern: '#6FD9D0', highlight: '#5FD5C8' },
+                { primary: '#95E1D3', secondary: '#7BC4B8', pattern: '#B0EBE0', highlight: '#8FDED0' },
+                { primary: '#F7DC6F', secondary: '#F4D03F', pattern: '#F9E79F', highlight: '#F8D778' },
+                { primary: '#82E0AA', secondary: '#58D68D', pattern: '#A9DFBF', highlight: '#6EDD98' },
+                { primary: '#F1948A', secondary: '#EC7063', pattern: '#F5B7B1', highlight: '#EE8278' },
+                { primary: '#85C1E9', secondary: '#5DADE2', pattern: '#AED6F1', highlight: '#76B8E5' },
+                { primary: '#D7BDE2', secondary: '#C39BD3', pattern: '#E8DAEF', highlight: '#D0A8DC' }
+            ],
+            rare: [
+                { primary: '#9B59B6', secondary: '#8E44AD', pattern: '#AF7AC5', highlight: '#9B59B6', glow: 'rgba(138,43,226,0.8)' },
+                { primary: '#3498DB', secondary: '#2980B9', pattern: '#5DADE2', highlight: '#3498DB', glow: 'rgba(52,152,219,0.8)' }
+            ],
+            legendary: [
+                { primary: '#F1C40F', secondary: '#F39C12', pattern: '#F4D03F', highlight: '#F7DC6F', glow: 'rgba(255,215,0,0.9)' },
+                { primary: '#E74C3C', secondary: '#C0392B', pattern: '#EC7063', highlight: '#E74C3C', glow: 'rgba(231,76,60,0.8)' }
+            ]
+        };
+
+        // Generate detailed egg SVG
+        function generateEggSVG(type = 'common') {
+            let colors;
+            if (type === 'common') {
+                colors = eggColors.common[Math.floor(Math.random() * eggColors.common.length)];
+            } else if (type === 'rare') {
+                colors = eggColors.rare[Math.floor(Math.random() * eggColors.rare.length)];
+            } else {
+                colors = eggColors.legendary[Math.floor(Math.random() * eggColors.legendary.length)];
+            }
+
+            const patterns = [
+                // Polka dots
+                `<g opacity="0.7">
+                    <circle cx="15" cy="18" r="4" fill="${colors.pattern}"/>
+                    <circle cx="35" cy="25" r="3" fill="${colors.pattern}"/>
+                    <circle cx="20" cy="35" r="4" fill="${colors.pattern}"/>
+                    <circle cx="32" cy="45" r="3.5" fill="${colors.pattern}"/>
+                    <circle cx="25" cy="55" r="3" fill="${colors.pattern}"/>
+                </g>`,
+                // Stripes
+                `<g opacity="0.6">
+                    <path d="M 8 20 Q 25 18 42 20" stroke="${colors.pattern}" stroke-width="4" fill="none"/>
+                    <path d="M 10 32 Q 25 30 40 32" stroke="${colors.pattern}" stroke-width="4" fill="none"/>
+                    <path d="M 12 44 Q 25 42 38 44" stroke="${colors.pattern}" stroke-width="4" fill="none"/>
+                    <path d="M 15 54 Q 25 52 35 54" stroke="${colors.pattern}" stroke-width="3" fill="none"/>
+                </g>`,
+                // Zigzag
+                `<g opacity="0.6">
+                    <path d="M 8 25 L 15 18 L 22 25 L 29 18 L 36 25 L 43 18" stroke="${colors.pattern}" stroke-width="3" fill="none"/>
+                    <path d="M 10 40 L 17 33 L 24 40 L 31 33 L 38 40" stroke="${colors.pattern}" stroke-width="3" fill="none"/>
+                </g>`,
+                // Flowers
+                `<g opacity="0.7">
+                    <g transform="translate(15, 25)">
+                        <circle cx="0" cy="-5" r="3" fill="${colors.pattern}"/>
+                        <circle cx="5" cy="0" r="3" fill="${colors.pattern}"/>
+                        <circle cx="0" cy="5" r="3" fill="${colors.pattern}"/>
+                        <circle cx="-5" cy="0" r="3" fill="${colors.pattern}"/>
+                        <circle cx="0" cy="0" r="2" fill="${colors.highlight}"/>
+                    </g>
+                    <g transform="translate(35, 45)">
+                        <circle cx="0" cy="-4" r="2.5" fill="${colors.pattern}"/>
+                        <circle cx="4" cy="0" r="2.5" fill="${colors.pattern}"/>
+                        <circle cx="0" cy="4" r="2.5" fill="${colors.pattern}"/>
+                        <circle cx="-4" cy="0" r="2.5" fill="${colors.pattern}"/>
+                        <circle cx="0" cy="0" r="1.5" fill="${colors.highlight}"/>
+                    </g>
+                </g>`,
+                // Stars
+                `<g opacity="0.7">
+                    <polygon points="20,20 22,26 28,26 23,30 25,36 20,32 15,36 17,30 12,26 18,26" fill="${colors.pattern}"/>
+                    <polygon points="35,40 36.5,44 40,44 37.5,47 38.5,51 35,48 31.5,51 32.5,47 30,44 33.5,44" fill="${colors.pattern}"/>
+                </g>`
+            ];
+
+            const pattern = patterns[Math.floor(Math.random() * patterns.length)];
+            const id = 'egg' + Date.now() + Math.random().toString(36).substr(2, 9);
+
+            return `<svg viewBox="0 0 50 65" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="grad${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:${colors.primary}"/>
+                        <stop offset="50%" style="stop-color:${colors.secondary}"/>
+                        <stop offset="100%" style="stop-color:${colors.primary}"/>
+                    </linearGradient>
+                    <radialGradient id="shine${id}" cx="30%" cy="30%" r="50%">
+                        <stop offset="0%" style="stop-color:${colors.highlight};stop-opacity:0.6"/>
+                        <stop offset="100%" style="stop-color:white;stop-opacity:0"/>
+                    </radialGradient>
+                </defs>
+                <ellipse cx="25" cy="38" rx="22" ry="27" fill="url(#grad${id})"/>
+                <ellipse cx="25" cy="38" rx="22" ry="27" fill="url(#shine${id})"/>
+                ${pattern}
+                <ellipse cx="25" cy="38" rx="22" ry="27" fill="none" stroke="${colors.secondary}" stroke-width="1" opacity="0.5"/>
+            </svg>`;
+        }
+
+        // Create detailed bunny SVG
+        function createBunnySVG(id) {
+            return `<svg viewBox="0 0 80 100" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="bunnyFur${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#FAFAFA"/>
+                        <stop offset="50%" style="stop-color:#F0F0F0"/>
+                        <stop offset="100%" style="stop-color:#E0E0E0"/>
+                    </linearGradient>
+                    <linearGradient id="bunnyFurDark${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#E8E8E8"/>
+                        <stop offset="100%" style="stop-color:#D0D0D0"/>
+                    </linearGradient>
+                    <filter id="shadow${id}">
+                        <feDropShadow dx="1" dy="2" stdDeviation="1" flood-opacity="0.2"/>
+                    </filter>
+                </defs>
+                
+                <!-- Back ear -->
+                <g class="back-ear" transform="translate(52, 5)">
+                    <ellipse cx="0" cy="20" rx="8" ry="25" fill="url(#bunnyFurDark${id})" stroke="#C8C8C8" stroke-width="0.5"/>
+                    <ellipse cx="0" cy="20" rx="4" ry="15" fill="#FFB6C1"/>
+                </g>
+                
+                <!-- Body -->
+                <ellipse cx="40" cy="70" rx="28" ry="22" fill="url(#bunnyFur${id})" stroke="#C8C8C8" stroke-width="0.5" filter="url(#shadow${id})"/>
+                
+                <!-- Back foot -->
+                <ellipse cx="25" cy="88" rx="12" ry="6" fill="url(#bunnyFurDark${id})" stroke="#C8C8C8" stroke-width="0.5"/>
+                
+                <!-- Front foot -->
+                <ellipse cx="55" cy="88" rx="12" ry="6" fill="url(#bunnyFur${id})" stroke="#C8C8C8" stroke-width="0.5"/>
+                
+                <!-- Tail -->
+                <circle cx="15" cy="72" r="10" fill="white" stroke="#E8E8E8" stroke-width="0.5"/>
+                <circle cx="13" cy="70" r="3" fill="#FAFAFA"/>
+                
+                <!-- Head -->
+                <ellipse cx="40" cy="45" rx="22" ry="18" fill="url(#bunnyFur${id})" stroke="#C8C8C8" stroke-width="0.5" filter="url(#shadow${id})"/>
+                
+                <!-- Front ear -->
+                <g class="front-ear" transform="translate(28, 5)">
+                    <ellipse cx="0" cy="20" rx="9" ry="28" fill="url(#bunnyFur${id})" stroke="#C8C8C8" stroke-width="0.5"/>
+                    <ellipse cx="0" cy="20" rx="4.5" ry="17" fill="#FFB6C1"/>
+                </g>
+                
+                <!-- Cheeks -->
+                <ellipse cx="28" cy="48" rx="6" ry="4" fill="#FFB6C1" opacity="0.5"/>
+                <ellipse cx="52" cy="48" rx="6" ry="4" fill="#FFB6C1" opacity="0.5"/>
+                
+                <!-- Eyes -->
+                <g class="bunny-eyes">
+                    <ellipse cx="33" cy="42" rx="4" ry="5" fill="#2C1810"/>
+                    <ellipse cx="47" cy="42" rx="4" ry="5" fill="#2C1810"/>
+                    <circle cx="35" cy="40" r="1.5" fill="white"/>
+                    <circle cx="49" cy="40" r="1.5" fill="white"/>
+                    <circle cx="33" cy="43" r="0.8" fill="white" opacity="0.5"/>
+                    <circle cx="47" cy="43" r="0.8" fill="white" opacity="0.5"/>
+                </g>
+                
+                <!-- Nose -->
+                <ellipse cx="40" cy="50" rx="3" ry="2.5" fill="#FF69B4"/>
+                
+                <!-- Mouth -->
+                <path class="bunny-mouth" d="M 37 54 Q 40 57 43 54" fill="none" stroke="#2C1810" stroke-width="1.5" stroke-linecap="round"/>
+                
+                <!-- Whiskers -->
+                <g class="whiskers">
+                    <line x1="22" y1="48" x2="10" y2="45" stroke="#888" stroke-width="0.7"/>
+                    <line x1="22" y1="50" x2="10" y2="52" stroke="#888" stroke-width="0.7"/>
+                    <line x1="22" y1="52" x2="12" y2="58" stroke="#888" stroke-width="0.7"/>
+                    <line x1="58" y1="48" x2="70" y2="45" stroke="#888" stroke-width="0.7"/>
+                    <line x1="58" y1="50" x2="70" y2="52" stroke="#888" stroke-width="0.7"/>
+                    <line x1="58" y1="52" x2="68" y2="58" stroke="#888" stroke-width="0.7"/>
+                </g>
+                
+                <!-- Eyebrows (for expressions) -->
+                <g class="eyebrows">
+                    <path d="M 29 36 Q 33 34 37 36" fill="none" stroke="#999" stroke-width="1" opacity="0.5"/>
+                    <path d="M 43 36 Q 47 34 51 36" fill="none" stroke="#999" stroke-width="1" opacity="0.5"/>
+                </g>
+            </svg>`;
+        }
+
+        // Improved Clouds
+        function createClouds() {
+            const container = document.getElementById('cloudsContainer');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < 6; i++) {
+                const cloud = document.createElement('div');
+                cloud.className = 'cloud';
+                cloud.style.animationDuration = (50 + Math.random() * 60) + 's';
+                cloud.style.animationDelay = (-Math.random() * 60) + 's';
+                cloud.style.top = (3 + Math.random() * 25) + '%';
+                
+                const size = 100 + Math.random() * 150;
+                cloud.innerHTML = `
+                    <svg class="cloud-body" width="${size}" height="${size * 0.5}" viewBox="0 0 200 100">
+                        <defs>
+                            <linearGradient id="cloudGrad${i}" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:white;stop-opacity:1"/>
+                                <stop offset="100%" style="stop-color:#E8E8E8;stop-opacity:0.9"/>
+                            </linearGradient>
+                            <filter id="cloudBlur${i}">
+                                <feGaussianBlur stdDeviation="1"/>
+                            </filter>
+                        </defs>
+                        <ellipse cx="50" cy="60" rx="45" ry="35" fill="url(#cloudGrad${i})"/>
+                        <ellipse cx="100" cy="50" rx="50" ry="40" fill="url(#cloudGrad${i})"/>
+                        <ellipse cx="150" cy="60" rx="45" ry="35" fill="url(#cloudGrad${i})"/>
+                        <ellipse cx="75" cy="70" rx="35" ry="25" fill="url(#cloudGrad${i})"/>
+                        <ellipse cx="125" cy="70" rx="35" ry="25" fill="url(#cloudGrad${i})"/>
+                    </svg>
+                `;
+                container.appendChild(cloud);
+            }
+        }
+
+        // Create grass blades
+        function createGrass() {
+            const svg = document.getElementById('grassBlades');
+            svg.innerHTML = '';
+            svg.setAttribute('preserveAspectRatio', 'none');
+            
+            for (let i = 0; i < 100; i++) {
+                const x = (i / 100) * 100;
+                const height = 20 + Math.random() * 40;
+                const curve = (Math.random() - 0.5) * 20;
+                const green = Math.floor(100 + Math.random() * 80);
+                const color = `rgb(${green}, ${Math.floor(green * 1.5)}, ${Math.floor(green * 0.5)})`;
+                
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', `M ${x}% 100% Q ${x + curve}% ${100 - height}% ${x}% ${100 - height * 0.8}%`);
+                path.setAttribute('stroke', color);
+                path.setAttribute('stroke-width', '2');
+                path.setAttribute('fill', 'none');
+                path.setAttribute('opacity', '0.8');
+                svg.appendChild(path);
+            }
+        }
+
+        // Create park elements with layers
+        function createParkElements() {
+            const container = document.getElementById('parkElements');
+            container.innerHTML = '';
+
+            // Large background trees
+            createTree(container, 5, 60, 1.2, true);
+            createTree(container, 88, 55, 1.1, true);
+            
+            // Mid-ground trees
+            createTree(container, 20, 50, 1, false);
+            
+            // Park bench
+            createBench(container, 70, 70);
+            
+            // Bushes with layers
+            createBush(container, 10, 75, 0.8, true);
+            createBush(container, 35, 72, 1, false);
+            createBush(container, 60, 78, 0.7, false);
+            createBush(container, 85, 74, 0.9, true);
+            
+            // Flowers
+            createFlowerPatch(container, 5, 88, 15);
+            createFlowerPatch(container, 45, 90, 10);
+            createFlowerPatch(container, 75, 85, 12);
+            
+            // Pond
+            createPond(container, 50, 82, 80);
+        }
+
+        function createTree(container, x, y, scale, isBack) {
+            const tree = document.createElement('div');
+            tree.className = `park-element large-tree ${isBack ? 'back' : ''}`;
+            tree.style.left = x + '%';
+            tree.style.bottom = (100 - y) + '%';
+            tree.style.transform = `scale(${scale})`;
+            
+            const trunkColor = isBack ? '#654321' : '#8B4513';
+            const leavesColor1 = isBack ? '#1B5E20' : '#32CD32';
+            const leavesColor2 = isBack ? '#2E7D32' : '#228B22';
+            
+            tree.innerHTML = `
+                <svg width="120" height="180" viewBox="0 0 120 180">
+                    <defs>
+                        <linearGradient id="trunkGrad${x}" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:${trunkColor}"/>
+                            <stop offset="50%" style="stop-color:#A0522D"/>
+                            <stop offset="100%" style="stop-color:${trunkColor}"/>
+                        </linearGradient>
+                        <radialGradient id="leavesGrad${x}" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" style="stop-color:${leavesColor1}"/>
+                            <stop offset="100%" style="stop-color:${leavesColor2}"/>
+                        </radialGradient>
+                    </defs>
+                    <!-- Shadow -->
+                    <ellipse cx="60" cy="175" rx="45" ry="10" fill="rgba(0,0,0,0.2)"/>
+                    <!-- Trunk -->
+                    <rect x="50" y="120" width="20" height="55" fill="url(#trunkGrad${x})" rx="3"/>
+                    <!-- Branches -->
+                    <path d="M 55 130 Q 40 115 45 100" stroke="${trunkColor}" stroke-width="5" fill="none"/>
+                    <path d="M 65 125 Q 80 110 75 95" stroke="${trunkColor}" stroke-width="5" fill="none"/>
+                    <!-- Leaves layers -->
+                    <ellipse cx="60" cy="85" rx="50" ry="45" fill="url(#leavesGrad${x})"/>
+                    <ellipse cx="40" cy="70" rx="35" ry="30" fill="url(#leavesGrad${x})" opacity="0.8"/>
+                    <ellipse cx="80" cy="70" rx="35" ry="30" fill="url(#leavesGrad${x})" opacity="0.8"/>
+                    <ellipse cx="60" cy="55" rx="40" ry="35" fill="url(#leavesGrad${x})" opacity="0.9"/>
+                    <ellipse cx="50" cy="40" rx="25" ry="22" fill="${leavesColor1}" opacity="0.7"/>
+                    <ellipse cx="70" cy="45" rx="20" ry="18" fill="${leavesColor1}" opacity="0.7"/>
+                    <!-- Highlights -->
+                    <ellipse cx="45" cy="60" rx="15" ry="12" fill="${leavesColor1}" opacity="0.5"/>
+                    <ellipse cx="75" cy="55" rx="12" ry="10" fill="${leavesColor1}" opacity="0.5"/>
+                </svg>
+            `;
+            container.appendChild(tree);
+        }
+
+        function createBench(container, x, y) {
+            const bench = document.createElement('div');
+            bench.className = 'park-element park-bench';
+            bench.style.left = x + '%';
+            bench.style.bottom = (100 - y) + '%';
+            bench.style.transform = 'scale(0.9)';
+            
+			bench.innerHTML = `
+				<svg width="100" height="70" viewBox="0 0 100 70">
+					<!-- Shadow -->
+					<ellipse cx="50" cy="65" rx="40" ry="5" fill="rgba(0,0,0,0.2)"/>
+					<!-- Legs -->
+					<rect x="15" y="45" width="8" height="20" fill="#5D4037" rx="2"/>
+					<rect x="77" y="45" width="8" height="20" fill="#5D4037" rx="2"/>
+					<!-- Seat planks -->
+					${Array(5).fill().map((_, i) => 
+						`<rect x="10" y="${30 + i * 4}" width="80" height="3" fill="#8B4513" rx="1"/>`
+					).join('')}
+					<!-- Back support -->
+					<rect x="15" y="10" width="70" height="4" fill="#6D4C41" rx="2"/>
+					<rect x="15" y="18" width="70" height="4" fill="#6D4C41" rx="2"/>
+					<!-- Back posts -->
+					<rect x="18" y="5" width="5" height="30" fill="#5D4037" rx="2"/>
+					<rect x="77" y="5" width="5" height="30" fill="#5D4037" rx="2"/>
+				</svg>
+			`;
+            container.appendChild(bench);
+        }
+
+        function createBush(container, x, y, scale, isBack) {
+            const bush = document.createElement('div');
+            bush.className = `park-element bush ${isBack ? 'back' : ''}`;
+            bush.style.left = x + '%';
+            bush.style.bottom = (100 - y) + '%';
+            bush.style.transform = `scale(${scale})`;
+            
+            const greenBase = isBack ? '1B5E20' : '32CD32';
+            const greenDark = isBack ? '2E7D32' : '228B22';
+            const greenLight = isBack ? '4CAF50' : '90EE90';
+            
+			bush.innerHTML = `
+				<svg width="80" height="50" viewBox="0 0 80 50">
+					<defs>
+						<radialGradient id="bushGrad${x}" cx="50%" cy="70%" r="60%">
+							<stop offset="0%" style="stop-color:#${greenLight}"/>
+							<stop offset="50%" style="stop-color:#${greenBase}"/>
+							<stop offset="100%" style="stop-color:#${greenDark}"/>
+						</radialGradient>
+					</defs>
+					<!-- Main bush body -->
+					<ellipse cx="40" cy="35" rx="35" ry="18" fill="url(#bushGrad${x})"/>
+					<ellipse cx="25" cy="28" rx="22" ry="15" fill="url(#bushGrad${x})"/>
+					<ellipse cx="55" cy="30" rx="20" ry="14" fill="url(#bushGrad${x})"/>
+					<!-- Top bumps -->
+					<ellipse cx="20" cy="20" rx="12" ry="10" fill="#${greenBase}"/>
+					<ellipse cx="40" cy="18" rx="14" ry="11" fill="#${greenBase}"/>
+					<ellipse cx="60" cy="22" rx="12" ry="9" fill="#${greenBase}"/>
+					<!-- Highlight -->
+					<ellipse cx="30" cy="15" rx="8" ry="6" fill="#${greenLight}" opacity="0.6"/>
+					<ellipse cx="50" cy="20" rx="6" ry="5" fill="#${greenLight}" opacity="0.5"/>
+					<!-- Flowers if not back -->
+					${!isBack ? `
+						<circle cx="20" cy="25" r="3" fill="#FF69B4"/>
+						<circle cx="55" cy="28" r="2.5" fill="#FFD700"/>
+						<circle cx="35" cy="22" r="2" fill="#FF6347"/>
+					` : ''}
+				</svg>
+			`;
+            container.appendChild(bush);
+        }
+
+		function createFlowerPatch(container, x, y, count) {
+			const patch = document.createElement('div');
+			patch.className = 'park-element flower-patch';
+			patch.style.left = x + '%';
+			patch.style.bottom = (100 - y) + '%';
+			
+			const flowers = ['#FF69B4', '#FFD700', '#FF6347', '#9370DB', '#00CED1', '#FF4500'];
+			let svg = '<svg width="60" height="40" viewBox="0 0 60 40">';
+			
+			for (let i = 0; i < count; i++) {
+				const fx = 5 + (i / count) * 50;
+				const fy = 20 + Math.random() * 15;
+				const color = flowers[Math.floor(Math.random() * flowers.length)];
+				const size = 3 + Math.random() * 3;
+				
+				svg += `
+					<line x1="${fx}" y1="40" x2="${fx}" y2="${fy + 5}" stroke="#228B22" stroke-width="1.5"/>
+					<circle cx="${fx}" cy="${fy}" r="${size}" fill="${color}"/>
+					<circle cx="${fx + size * 0.8}" cy="${fy + size * 0.5}" r="${size * 0.7}" fill="${color}"/>
+					<circle cx="${fx - size * 0.8}" cy="${fy + size * 0.5}" r="${size * 0.7}" fill="${color}"/>
+					<circle cx="${fx}" cy="${fy - size * 0.5}" r="${size * 0.7}" fill="${color}"/>
+					<circle cx="${fx}" cy="${fy}" r="${size * 0.4}" fill="#FFD700"/>
+				`;
+			}
+			svg += '</svg>';
+			patch.innerHTML = svg;
+			container.appendChild(patch);
+		}
+
+        function createPond(container, x, y, width) {
+            const pond = document.createElement('div');
+            pond.className = 'park-element';
+            pond.style.left = x + '%';
+            pond.style.bottom = (100 - y) + '%';
+            pond.style.width = width + 'px';
+            pond.style.height = (width * 0.5) + 'px';
+            pond.style.zIndex = 10;
+            
+            pond.innerHTML = `
+                <div style="position: relative; width: 100%; height: 100%;">
+                    <svg width="100%" height="100%" viewBox="0 0 100 50" preserveAspectRatio="none">
+                        <defs>
+                            <radialGradient id="pondGrad" cx="50%" cy="30%" r="70%">
+                                <stop offset="0%" style="stop-color:#87CEEB"/>
+                                <stop offset="50%" style="stop-color:#5DADE2"/>
+                                <stop offset="100%" style="stop-color:#2874A6"/>
+                            </radialGradient>
+                        </defs>
+                        <ellipse cx="50" cy="25" rx="48" ry="23" fill="url(#pondGrad)"/>
+                        <ellipse cx="35" cy="15" rx="20" ry="8" fill="rgba(255,255,255,0.3)"/>
+                        <ellipse cx="60" cy="20" rx="15" ry="5" fill="rgba(255,255,255,0.2)"/>
+                    </svg>
+                </div>
+            `;
+            container.appendChild(pond);
+        }
+
+        // Spawn egg from random direction
+        function spawnEgg() {
+            const gameArea = document.getElementById('gameArea');
+            const egg = document.createElement('div');
+            
+            // Determine rarity
+            const rand = Math.random();
+            let type = 'common';
+            let points = 1;
+            if (rand < 0.05) {
+                type = 'legendary';
+                points = 10;
+            } else if (rand < 0.2) {
+                type = 'rare';
+                points = 5;
+            }
+            
+            egg.className = `egg ${type}`;
+            egg.innerHTML = generateEggSVG(type);
+            
+            // Spawn direction: 0=top, 1=right, 2=bottom, 3=left
+            const direction = Math.floor(Math.random() * 4);
+            let x, y, vx, vy;
+            const speed = 3 + (gameState.score / 100);
+            const maxSpeed = Math.min(speed, 10);
+            
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            
+            switch(direction) {
+                case 0: // Top
+                    x = Math.random() * (w - 80);
+                    y = -80;
+                    vx = (Math.random() - 0.5) * maxSpeed * 2;
+                    vy = Math.random() * maxSpeed + 2;
+                    break;
+                case 1: // Right
+                    x = w + 20;
+                    y = Math.random() * (h * 0.6);
+                    vx = -(Math.random() * maxSpeed + 3);
+                    vy = (Math.random() - 0.5) * maxSpeed;
+                    break;
+                case 2: // Bottom (rare, for ground bounce)
+                    x = Math.random() * (w - 80);
+                    y = h * 0.7;
+                    vx = (Math.random() - 0.5) * maxSpeed;
+                    vy = -(Math.random() * maxSpeed + 5);
+                    break;
+                case 3: // Left
+                    x = -80;
+                    y = Math.random() * (h * 0.6);
+                    vx = Math.random() * maxSpeed + 3;
+                    vy = (Math.random() - 0.5) * maxSpeed;
+                    break;
+            }
+            
+            // Choose layer (affects z-index and behavior)
+            const layerChoice = Math.random();
+            let layer;
+            if (layerChoice < 0.3) {
+                layer = 'back';
+            } else if (layerChoice < 0.7) {
+                layer = 'mid';
+            } else {
+                layer = 'front';
+            }
+            
+            const eggData = {
+                id: Date.now() + Math.random(),
+                element: egg,
+                type: type,
+                points: points,
+                x: x,
+                y: y,
+                vx: vx,
+                vy: vy,
+                collected: false,
+                layer: layer,
+                bounceCount: 0
+            };
+            
+            egg.style.left = x + 'px';
+            egg.style.top = y + 'px';
+            egg.style.opacity = layer === 'back' ? '0.7' : '1';
+            egg.style.transform = layer === 'back' ? 'scale(0.8)' : layer === 'front' ? 'scale(1.1)' : 'scale(1)';
+            
+            egg.addEventListener('click', () => collectEgg(eggData));
+            egg.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                collectEgg(eggData);
+            });
+            
+            // Add to appropriate layer
+            document.getElementById(`layer${layer.charAt(0).toUpperCase() + layer.slice(1)}`).appendChild(egg);
+            eggs.push(eggData);
+        }
+
+        // Collect egg
+        function collectEgg(eggData) {
+            if (eggData.collected) return;
+            eggData.collected = true;
+            
+            gameState.score += eggData.points;
+            if (eggData.type === 'legendary') {
+                gameState.legendaryCount++;
+                playSound('legendary');
+                createSparkles(eggData.x + 25, eggData.y + 35, 20, true);
+            } else if (eggData.type === 'rare') {
+                gameState.rareCount++;
+                playSound('rare');
+                createSparkles(eggData.x + 25, eggData.y + 35, 12, false);
+            } else {
+                gameState.commonCount++;
+                playSound('collect');
+                createSparkles(eggData.x + 25, eggData.y + 35, 8, false);
+            }
+            
+            eggData.element.style.transform = 'scale(0)';
+            eggData.element.style.opacity = '0';
+            setTimeout(() => {
+                eggData.element.remove();
+                eggs = eggs.filter(e => e.id !== eggData.id);
+            }, 300);
+            
+            saveGameState();
+            updateScoreDisplay();
+            updateBasketFill();
+        }
+
+        // Bunny collects egg
+        function bunnyCollectEgg(bunny, eggData) {
+            if (eggData.collected) return;
+            eggData.collected = true;
+            
+            playSound('missed');
+            
+            eggData.element.style.transform = 'scale(0)';
+            eggData.element.style.opacity = '0';
+            setTimeout(() => {
+                eggData.element.remove();
+                eggs = eggs.filter(e => e.id !== eggData.id);
+            }, 300);
+        }
+
+        // Create sparkles
+        function createSparkles(x, y, count, isLegendary) {
+            const colors = isLegendary ? ['👑', '⭐', '✨', '🌟', '💫'] : ['✨', '⭐', '💫'];
+            for (let i = 0; i < count; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.textContent = colors[Math.floor(Math.random() * colors.length)];
+                sparkle.style.left = x + 'px';
+                sparkle.style.top = y + 'px';
+                sparkle.style.fontSize = isLegendary ? '28px' : '22px';
+                sparkle.style.animationDelay = (Math.random() * 0.3) + 's';
+                sparkle.style.zIndex = 200;
+                
+                document.getElementById('layerFront').appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 700);
+            }
+        }
+
+        // Create bunny
+        function createBunnyElement(id) {
+            const bunny = document.createElement('div');
+            bunny.className = 'bunny';
+            bunny.id = `bunny-${id}`;
+            bunny.innerHTML = createBunnySVG(id);
+            bunny.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+            bunny.style.top = (window.innerHeight * 0.5 + Math.random() * (window.innerHeight * 0.3)) + 'px';
+            
+            bunny.addEventListener('click', () => petBunny(id));
+            bunny.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                petBunny(id);
+            });
+            
+            return bunny;
+        }
+
+        // Pet bunny
+        function petBunny(id) {
+            const bunny = bunnies.find(b => b.id === id);
+            if (!bunny || bunny.isPetted) return;
+            
+            bunny.isPetted = true;
+            bunny.stopTimer = Date.now() + 1500; // Stop for 1.5 seconds
+            
+            const bunnyEl = document.getElementById(`bunny-${id}`);
+            bunnyEl.classList.add('happy');
+           
+			createSparkles(bunny.x + 40, bunny.y + 50, 10, false);
+            
+            // Give bonus
+            gameState.score += 1;
+            gameState.commonCount++;
+            saveGameState();
+            updateScoreDisplay();
+            updateBasketFill();
+            
+            setTimeout(() => {
+                bunnyEl.classList.remove('happy');
+                bunny.isPetted = false;
+            }, 1500);
+            
+            playSound('pet');
+        }
+
+        // Bunny animations
+        const bunnyAnimations = [
+            { class: 'hopping', duration: 400, weight: 3 },
+            { class: 'wiggling', duration: 500, weight: 2 },
+            { class: 'dancing', duration: 1000, weight: 1 },
+            { class: 'spin', duration: 600, weight: 1 }
+        ];
+
+        function playBunnyAnimation(bunny) {
+            if (bunny.isAnimating || bunny.isPetted) return;
+            
+            // Weighted random selection
+            const totalWeight = bunnyAnimations.reduce((sum, a) => sum + a.weight, 0);
+            let random = Math.random() * totalWeight;
+            let selectedAnimation = bunnyAnimations[0];
+            
+            for (const anim of bunnyAnimations) {
+                random -= anim.weight;
+                if (random <= 0) {
+                    selectedAnimation = anim;
+                    break;
+                }
+            }
+            
+            bunny.isAnimating = true;
+            const bunnyEl = document.getElementById(`bunny-${bunny.id}`);
+            bunnyEl.classList.add(selectedAnimation.class);
+            
+            playSound('bunnyAction');
+            
+            setTimeout(() => {
+                bunnyEl.classList.remove(selectedAnimation.class);
+                bunny.isAnimating = false;
+            }, selectedAnimation.duration);
+        }
+
+        // Initialize bunnies
+        function initBunnies() {
+            bunnies.forEach(b => {
+                const el = document.getElementById(`bunny-${b.id}`);
+                if (el) el.remove();
+            });
+            bunnies = [];
+            
+            for (let i = 0; i < gameState.bunnyCount; i++) {
+                const bunny = {
+                    id: i,
+                    x: Math.random() * (window.innerWidth - 100),
+                    y: window.innerHeight * 0.5 + Math.random() * (window.innerHeight * 0.35),
+                    targetEgg: null,
+                    speed: 2 + Math.random() * 1.5,
+                    isPetted: false,
+                    isAnimating: false,
+                    stopTimer: 0,
+                    lastActionTime: Date.now() + Math.random() * 5000,
+                    facingRight: true
+                };
+                bunnies.push(bunny);
+                
+                const bunnyEl = createBunnyElement(bunny.id);
+                document.getElementById('layerMid').appendChild(bunnyEl);
+            }
+        }
+
+        // Update bunny count
+        function updateBunnyCount(count) {
+            count = Math.max(1, Math.min(6, parseInt(count) || 2));
+            gameState.bunnyCount = count;
+            document.getElementById('bunnyCount').value = count;
+            updateBunnyCounterDisplay();
+            saveGameState();
+            initBunnies();
+        }
+
+        function updateBunnyCounterDisplay() {
+            document.getElementById('bunnyCounterDisplay').textContent = `Active: ${gameState.bunnyCount}`;
+        }
+
+        // Update score display
+        function updateScoreDisplay() {
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('commonCount').textContent = gameState.commonCount;
+            document.getElementById('rareCount').textContent = gameState.rareCount;
+            document.getElementById('legendaryCount').textContent = gameState.legendaryCount;
+        }
+
+        // Update basket fill
+        function updateBasketFill() {
+            const basketFill = document.getElementById('basketFill');
+            const totalEggs = gameState.commonCount + gameState.rareCount + gameState.legendaryCount;
+            const maxDisplay = 24;
+            const displayCount = Math.min(totalEggs, maxDisplay);
+            
+            basketFill.innerHTML = '';
+            
+            let eggIndex = 0;
+            for (let i = 0; i < gameState.legendaryCount && eggIndex < maxDisplay; i++, eggIndex++) {
+                const miniEgg = document.createElement('div');
+                miniEgg.className = 'mini-egg';
+                miniEgg.style.background = 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)';
+                miniEgg.style.boxShadow = '0 0 8px rgba(255,215,0,0.8)';
+                basketFill.appendChild(miniEgg);
+            }
+            
+            for (let i = 0; i < gameState.rareCount && eggIndex < maxDisplay; i++, eggIndex++) {
+                const miniEgg = document.createElement('div');
+                miniEgg.className = 'mini-egg';
+                miniEgg.style.background = 'linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%)';
+                miniEgg.style.boxShadow = '0 0 6px rgba(138,43,226,0.6)';
+                basketFill.appendChild(miniEgg);
+            }
+            
+            for (let i = 0; i < gameState.commonCount && eggIndex < maxDisplay; i++, eggIndex++) {
+                const miniEgg = document.createElement('div');
+                miniEgg.className = 'mini-egg';
+                const colors = eggColors.common[Math.floor(Math.random() * eggColors.common.length)];
+                miniEgg.style.background = `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`;
+                basketFill.appendChild(miniEgg);
+            }
+        }
+
+        // Physics for eggs
+        const groundY = () => window.innerHeight * (1 - GROUND_LEVEL / 100);
+
+        // Game loop
+        function gameLoop() {
+            const now = Date.now();
+            
+            // Update eggs physics
+            eggs.forEach(egg => {
+                if (egg.collected) return;
+                
+                // Apply gravity
+                egg.vy += GRAVITY;
+                
+                // Apply friction to horizontal movement
+                egg.vx *= FRICTION;
+                
+                // Update position
+                egg.x += egg.vx;
+                egg.y += egg.vy;
+                
+                // Ground collision
+                const ground = groundY();
+                if (egg.y > ground - 30) {
+                    egg.y = ground - 30;
+                    egg.vy *= -BOUNCE_FACTOR;
+                    egg.bounceCount++;
+                    
+                    // Add some random horizontal movement on bounce
+                    if (Math.abs(egg.vy) > 0.5) {
+                        egg.vx += (Math.random() - 0.5) * 2;
+                    }
+                }
+                
+                // Wall collision
+                if (egg.x < -80 || egg.x > window.innerWidth + 80 ||
+                    egg.y < -200 || egg.y > window.innerHeight + 200) {
+                    // Remove off-screen eggs
+                    egg.element.remove();
+                    eggs = eggs.filter(e => e.id !== egg.id);
+                    return;
+                }
+                
+                // Left/right walls
+                if (egg.x < 0) {
+                    egg.x = 0;
+                    egg.vx *= -BOUNCE_FACTOR;
+                } else if (egg.x > window.innerWidth - 55) {
+                    egg.x = window.innerWidth - 55;
+                    egg.vx *= -BOUNCE_FACTOR;
+                }
+                
+                // Stop bouncing eventually
+                if (egg.bounceCount > 5 && Math.abs(egg.vy) < 0.5) {
+                    egg.vy = 0;
+                }
+                
+                // Update element position
+                egg.element.style.left = egg.x + 'px';
+                egg.element.style.top = egg.y + 'px';
+            });
+            
+            // Update bunnies
+            bunnies.forEach(bunny => {
+                const bunnyEl = document.getElementById(`bunny-${bunny.id}`);
+                if (!bunnyEl) return;
+                
+                // Check if stopped
+                if (bunny.stopTimer > now) return;
+                
+                // Random animation
+                if (now - bunny.lastActionTime > 3000 + Math.random() * 4000) {
+                    if (Math.random() < 0.4) {
+                        playBunnyAnimation(bunny);
+                    }
+                    bunny.lastActionTime = now;
+                }
+                
+                if (bunny.isPetted || bunny.isAnimating) return;
+                
+                // Find target egg - prioritize closer eggs, with some randomness
+                let targetEgg = null;
+                let bestScore = Infinity;
+                
+                const shuffledEggs = [...eggs].sort(() => Math.random() - 0.5);
+                
+                for (const egg of shuffledEggs) {
+                    if (egg.collected) continue;
+                    
+                    const dx = egg.x - bunny.x;
+                    const dy = egg.y - bunny.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    // Add randomness to target selection
+                    const score = dist + Math.random() * 50;
+                    
+                    if (score < bestScore) {
+                        bestScore = score;
+                        targetEgg = egg;
+                    }
+                }
+                
+                if (targetEgg && bestScore < 400) {
+                    bunny.targetEgg = targetEgg;
+                    
+                    const dx = targetEgg.x - bunny.x;
+                    const dy = targetEgg.y - bunny.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist > 5) {
+                        const moveSpeed = bunny.speed * (targetEgg.type === 'legendary' ? 1.3 : targetEgg.type === 'rare' ? 1.15 : 1);
+                        bunny.x += (dx / dist) * moveSpeed;
+                        bunny.y += (dy / dist) * moveSpeed;
+                        
+                        // Keep in bounds
+                        bunny.x = Math.max(0, Math.min(window.innerWidth - 80, bunny.x));
+                        bunny.y = Math.max(80, Math.min(window.innerHeight - 100, bunny.y));
+                        
+                        // Flip bunny based on direction
+                        bunny.facingRight = dx > 0;
+                    }
+                    
+                    // Collect egg if close enough
+                    if (dist < 50 && !targetEgg.collected) {
+                        bunnyCollectEgg(bunny, targetEgg);
+                        
+                        // Eating animation
+                        bunny.stopTimer = now + 800;
+                        bunnyEl.classList.add('eating');
+                        setTimeout(() => bunnyEl.classList.remove('eating'), 800);
+                    }
+                } else {
+                    // Wander randomly
+                    if (Math.random() < 0.02) {
+                        bunny.x += (Math.random() - 0.5) * 30;
+                        bunny.y += (Math.random() - 0.5) * 20;
+                        bunny.x = Math.max(0, Math.min(window.innerWidth - 80, bunny.x));
+                        bunny.y = Math.max(window.innerHeight * 0.4, Math.min(window.innerHeight - 100, bunny.y));
+                    }
+                }
+                
+                // Update element
+                bunnyEl.style.left = bunny.x + 'px';
+                bunnyEl.style.top = bunny.y + 'px';
+                bunnyEl.style.transform = bunny.facingRight ? 'scaleX(1)' : 'scaleX(-1)';
+            });
+            
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Spawn eggs with increasing frequency
+        let spawnInterval = 2500;
+        let lastSpawnTime = 0;
+
+        function scheduleEggSpawn() {
+            const baseInterval = Math.max(800, 2500 - gameState.score * 15);
+            spawnInterval = baseInterval + Math.random() * 500;
+            
+            setTimeout(() => {
+                spawnEgg();
+                scheduleEggSpawn();
+            }, spawnInterval);
+        }
+
+        // Resize handler
+        function handleResize() {
+            const ground = groundY();
+            
+            // Adjust bunny positions
+            bunnies.forEach(bunny => {
+                bunny.x = Math.min(bunny.x, window.innerWidth - 80);
+                bunny.y = Math.min(bunny.y, window.innerHeight - 100);
+                bunny.y = Math.max(bunny.y, window.innerHeight * 0.4);
+            });
+            
+            // Recreate park elements for new size
+            createParkElements();
+        }
+
+        // Initialize everything
+        function init() {
+            createClouds();
+            createGrass();
+            createParkElements();
+            loadGameState();
+            initBunnies();
+            scheduleEggSpawn();
+            gameLoop();
+            
+            // Init audio on first interaction
+            const initAudioOnce = () => {
+                if (!audioContext) initAudio();
+                document.removeEventListener('click', initAudioOnce);
+                document.removeEventListener('touchstart', initAudioOnce);
+            };
+            document.addEventListener('click', initAudioOnce);
+            document.addEventListener('touchstart', initAudioOnce);
+            
+            // Handle resize
+            window.addEventListener('resize', handleResize);
+        }
+
+        // Start the game
+        init();
+    </script>
+</body>
+</html>
